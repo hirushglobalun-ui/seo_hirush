@@ -1,10 +1,11 @@
 <!DOCTYPE html>
+
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
 <title>SEO Training - Hirush Global</title>
-<link href="https://fonts.googleapis.com/css2?family=Sora:wght@300;400;600;700;800&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@300;400;600;700;800&amp;family=DM+Mono:wght@400;500&amp;display=swap" rel="stylesheet"/>
 <style>
   :root {
     --blue: #1e3a8a;
@@ -1636,1476 +1637,1245 @@
 <body>
 <!-- LOADING SCREEN -->
 <div id="hg-loading">
-  <img class="hg-load-logo" id="hg-load-logo-img" src="https://hirushglobal.com/_next/image?url=%2Flogo.png&w=256&q=75" alt="Hirush Global">
-  <div class="hg-load-brand">Hirush Global</div>
-  <div class="hg-load-sub">SEO Training Program</div>
-  <div class="hg-load-bar-wrap"><div class="hg-load-bar-fill"></div></div>
-  <div class="hg-load-spinner"></div>
+<img alt="Hirush Global" class="hg-load-logo" id="hg-load-logo-img" src="https://hirushglobal.com/_next/image?url=%2Flogo.png&amp;w=256&amp;q=75"/>
+<div class="hg-load-brand">Hirush Global</div>
+<div class="hg-load-sub">SEO Training Program</div>
+<div class="hg-load-bar-wrap"><div class="hg-load-bar-fill"></div></div>
+<div class="hg-load-spinner"></div>
 </div>
-
-<!-- LOGIN SCREEN -->
-<div id="hg-login">
-  <div class="hg-login-card">
-    <div class="hg-login-logo-wrap">
-      <img class="hg-login-logo" id="hg-login-logo-img" src="https://hirushglobal.com/_next/image?url=%2Flogo.png&w=256&q=75" alt="Hirush Global">
-      <div class="hg-login-brand-text">
-        <strong>Hirush Global</strong>
-        <span>SEO Training Program</span>
-      </div>
-    </div>
-    <div class="hg-login-title">Welcome Back</div>
-    <div class="hg-login-subtitle">Sign in with your company credentials to continue</div>
-    <div class="hg-login-err" id="hg-login-err">❌ Incorrect Company ID or Password. Please try again.</div>
-    <label class="hg-field-label" for="hg-cid">Company ID</label>
-    <input class="hg-input" id="hg-cid" type="text" placeholder="e.g. HG001" maxlength="5" autocomplete="off" spellcheck="false">
-    <label class="hg-field-label" for="hg-pwd">Password</label>
-    <input class="hg-input" id="hg-pwd" type="password" placeholder="Enter your password" autocomplete="off">
-    <div class="hg-remember-row">
-      <input type="checkbox" id="hg-remember" checked>
-      <label for="hg-remember">💾 Save my credentials (auto-fill next time)</label>
-    </div>
-    <div id="hg-saved-info" style="display:none" class="hg-saved-badge">✅ Credentials saved — fields pre-filled!</div>
-    <button class="hg-login-btn" onclick="hgDoLogin()">Sign In →</button>
-    <div class="hg-login-footer">
-      🔒 Secure login · Hirush Global Internal Platform<br>Contact your manager if you've forgotten your credentials.<br><span style="cursor:pointer;color:#cbd5e1;text-decoration:underline;" onclick="hgClearSaved()">Clear saved credentials</span>
-    </div>
-  </div>
-</div>
-
-<!-- WELCOME TOAST -->
-<div id="hg-welcome-toast"></div>
-
 <script>
 (function(){
-  var C =  {
-    'HG001':'password','HG002':'password','HG003':'password',
-    'HG004':'password','HG005':'password','HG006':'password',
-    'HG007':'password','HG008':'password','HG009':'password',
-    'HG010':'password','HG011':'password','HG012':'password',
-    'HG013':'password','HG014':'password','HG015':'password'
-  };
-  var SK = 'hg_seo_v4';
-
-  // Copy sidebar logo to loading/login screens once DOM ready
-  function syncLogos() {
-    var sidebarLogo = document.querySelector('.sidebar-header img');
-    var src = sidebarLogo ? sidebarLogo.src : '';
-    if (src) {
-      document.getElementById('hg-load-logo-img').src = src;
-      document.getElementById('hg-login-logo-img').src = src;
-    }
-  }
-
-  function showApp(cid) {
-    // Inject user badge into sidebar
-    var nav = document.querySelector('.sidebar nav');
-    if (nav && !document.querySelector('.hg-user-badge')) {
-      var num = cid.replace('HG','');
-      var badge = document.createElement('div');
-      badge.className = 'hg-user-badge';
-      badge.innerHTML =
-        '<div class="hg-user-avatar">' + num + '</div>' +
-        '<div class="hg-user-info">' +
-          '<div class="hg-user-id">' + cid + '</div>' +
-          '<div class="hg-user-role">Intern — SEO Training</div>' +
-        '</div>' +
-        '<button class="hg-logout-btn" onclick="hgLogout()">Logout</button>';
-      nav.parentNode.insertBefore(badge, nav);
-    }
-    document.getElementById('hg-login').classList.remove('show');
-  }
-
-  function showToast(cid) {
-    var t = document.getElementById('hg-welcome-toast');
-    t.innerHTML = '👋 Welcome, <strong>' + cid + '</strong>!<br><span style="font-size:0.8rem;opacity:0.85">Your SEO training journey continues.</span>';
-    t.classList.add('show');
-    setTimeout(function(){ t.classList.remove('show'); }, 3500);
-  }
-
-  var SAVE_KEY = 'hg_saved_creds_v4';
-
-  // Load saved credentials on page ready
-  function loadSavedCreds() {
-    try {
-      var saved = localStorage.getItem(SAVE_KEY);
-      if (saved) {
-        var parsed = JSON.parse(saved);
-        document.getElementById('hg-cid').value = parsed.cid || '';
-        document.getElementById('hg-pwd').value = parsed.pwd || '';
-        document.getElementById('hg-remember').checked = true;
-        var info = document.getElementById('hg-saved-info');
-        if (info) info.style.display = 'flex';
-      }
-    } catch(e) {}
-  }
-
-  window.hgDoLogin = function() {
-    var cid = (document.getElementById('hg-cid').value || '').trim().toUpperCase();
-    var pwd = (document.getElementById('hg-pwd').value || '').trim();
-    var cidEl = document.getElementById('hg-cid');
-    var pwdEl = document.getElementById('hg-pwd');
-    var errEl = document.getElementById('hg-login-err');
-    var rememberEl = document.getElementById('hg-remember');
-
-    cidEl.classList.remove('err'); pwdEl.classList.remove('err');
-    errEl.classList.remove('show');
-
-    if (!cid || !pwd) {
-      if (!cid) cidEl.classList.add('err');
-      if (!pwd) pwdEl.classList.add('err');
-      errEl.classList.add('show');
-      return;
-    }
-
-    if (C[cid] && C[cid] === pwd) {
-      // Save credentials if "remember me" checked
-      if (rememberEl && rememberEl.checked) {
-        try { localStorage.setItem(SAVE_KEY, JSON.stringify({cid: cid, pwd: pwd})); } catch(e) {}
-      } else {
-        try { localStorage.removeItem(SAVE_KEY); } catch(e) {}
-      }
-      sessionStorage.setItem(SK, cid);
-      showApp(cid);
-      showToast(cid);
-      pwdEl.value = '';
-    } else {
-      cidEl.classList.add('err'); pwdEl.classList.add('err');
-      errEl.classList.add('show');
-      pwdEl.value = '';
-    }
-  };
-
-  window.hgLogout = function() {
-    sessionStorage.removeItem(SK);
-    var badge = document.querySelector('.hg-user-badge');
-    if (badge) badge.remove();
-    // Restore saved creds if any
-    var cidEl = document.getElementById('hg-cid');
-    var pwdEl = document.getElementById('hg-pwd');
-    try {
-      var saved = localStorage.getItem(SAVE_KEY);
-      if (saved) {
-        var parsed = JSON.parse(saved);
-        cidEl.value = parsed.cid || '';
-        pwdEl.value = parsed.pwd || '';
-        var info = document.getElementById('hg-saved-info');
-        if (info) info.style.display = 'flex';
-      } else {
-        cidEl.value = ''; pwdEl.value = '';
-      }
-    } catch(e) { cidEl.value = ''; pwdEl.value = ''; }
-    document.getElementById('hg-login-err').classList.remove('show');
-    document.getElementById('hg-login').classList.add('show');
-  };
-
-  window.hgClearSaved = function() {
-    try { localStorage.removeItem(SAVE_KEY); } catch(e) {}
-    document.getElementById('hg-cid').value = '';
-    document.getElementById('hg-pwd').value = '';
-    document.getElementById('hg-remember').checked = false;
-    var info = document.getElementById('hg-saved-info');
-    if (info) info.style.display = 'none';
-  };
-
-  // Allow Enter key on login form
-  document.addEventListener('keydown', function(e) {
-    if (e.key === 'Enter') {
-      var login = document.getElementById('hg-login');
-      if (login && login.classList.contains('show')) hgDoLogin();
-    }
-  });
-
-  // Boot sequence
-  document.addEventListener('DOMContentLoaded', function(){
-    syncLogos();
-    loadSavedCreds();
-    var loading = document.getElementById('hg-loading');
-    var loginEl = document.getElementById('hg-login');
-    var stored = sessionStorage.getItem(SK);
-
+document.addEventListener('DOMContentLoaded', function(){
+  var loading = document.getElementById('hg-loading');
+  setTimeout(function(){
+    loading.classList.add('fade-out');
     setTimeout(function(){
-      loading.classList.add('fade-out');
-      setTimeout(function(){
-        loading.style.display = 'none';
-        if (stored && C[stored]) {
-          showApp(stored);
-        } else {
-          loginEl.classList.add('show');
-        }
-      }, 650);
-    }, 2600);
-  });
+      loading.style.display='none';
+      document.querySelector('.main').style.display='block';
+    },650);
+  },2600);
+});
 })();
 </script>
-
-
 <!-- SIDEBAR -->
 <div class="sidebar">
-  <div class="sidebar-header">
-    <div class="brand">
+<div class="sidebar-header"><img alt="Hirush Global" src="https://hirushglobal.com/_next/image?url=%2Flogo.png&amp;w=256&amp;q=75" style="width:48px;height:48px;object-fit:contain;border-radius:8px;background:#fff;padding:4px;"/>
+<div class="brand">
       Hirush Global
       <span>SEO Training Program</span>
-    </div>
-  </div>
-  <nav>
-    <div class="nav-section">Course Overview</div>
-    <a class="nav-item active" onclick="showSection('home')">
-      <span class="icon">🏠</span> Dashboard
-    </a>
-    <div class="nav-section">Modules</div>
-    <a class="nav-item" id="nav-m1" onclick="navClick('m1')">
-      <span class="icon">🌐</span> Module 1: Intro to SEO
-    </a>
-    <a class="nav-item locked" id="nav-m2" onclick="navClick('m2')">
-      <span class="icon">🔍</span> Module 2: Keyword Research
-    </a>
-    <a class="nav-item locked" id="nav-m3" onclick="navClick('m3')">
-      <span class="icon">🛠</span> Module 3: On-Page SEO
-    </a>
-    <a class="nav-item locked" id="nav-m4" onclick="navClick('m4')">
-      <span class="icon">⚙️</span> Module 4: Technical SEO
-    </a>
-    <a class="nav-item locked" id="nav-m5" onclick="navClick('m5')">
-      <span class="icon">📈</span> Module 5: GSC &amp; Analytics
-    </a>
-    <a class="nav-item locked" id="nav-m6" onclick="navClick('m6')">
-      <span class="icon">🌍</span> Module 6: Off-Page SEO
-    </a>
-    <a class="nav-item locked" id="nav-m7" onclick="navClick('m7')">
-      <span class="icon">📍</span> Module 7: Local SEO
-    </a>
-    <a class="nav-item locked" id="nav-m8" onclick="navClick('m8')">
-      <span class="icon">📚</span> Module 8: Content Strategy
-    </a>
-    <a class="nav-item locked" id="nav-m9" onclick="navClick('m9')">
-      <span class="icon">🔧</span> Module 9: SEO Tools &amp; Audits
-    </a>
-    <a class="nav-item locked" id="nav-m10" onclick="navClick('m10')">
-      <span class="icon">🎓</span> Module 10: Advanced SEO
-      <span class="badge">ADV</span>
-    </a>
-    <a class="nav-item locked" id="nav-m11" onclick="navClick('m11')">
-      <span class="icon">🛒</span> Module 11: E-Commerce SEO
-      <span class="badge" style="background:var(--green)">NEW</span>
-    </a>
-    <a class="nav-item locked" id="nav-m12" onclick="navClick('m12')">
-      <span class="icon">🤖</span> Module 12: AI &amp; Future SEO
-      <span class="badge" style="background:var(--green)">NEW</span>
-    </a>
-    <div class="nav-section">Practice</div>
-    <a class="nav-item" onclick="showSection('assignments')">
-      <span class="icon">📝</span> Assignments
-    </a>
-  </nav>
 </div>
-
+</div>
+<nav>
+<div class="nav-section">Course Overview</div>
+<a class="nav-item active" onclick="showSection('home')">
+<span class="icon">🏠</span> Dashboard
+    </a>
+<div class="nav-section">Modules</div>
+<a class="nav-item" id="nav-m1" onclick="navClick('m1')">
+<span class="icon">🌐</span> Module 1: Intro to SEO
+    </a>
+<a class="nav-item locked" id="nav-m2" onclick="navClick('m2')">
+<span class="icon">🔍</span> Module 2: Keyword Research
+    </a>
+<a class="nav-item locked" id="nav-m3" onclick="navClick('m3')">
+<span class="icon">🛠</span> Module 3: On-Page SEO
+    </a>
+<a class="nav-item locked" id="nav-m4" onclick="navClick('m4')">
+<span class="icon">⚙️</span> Module 4: Technical SEO
+    </a>
+<a class="nav-item locked" id="nav-m5" onclick="navClick('m5')">
+<span class="icon">📈</span> Module 5: GSC &amp; Analytics
+    </a>
+<a class="nav-item locked" id="nav-m6" onclick="navClick('m6')">
+<span class="icon">🌍</span> Module 6: Off-Page SEO
+    </a>
+<a class="nav-item locked" id="nav-m7" onclick="navClick('m7')">
+<span class="icon">📍</span> Module 7: Local SEO
+    </a>
+<a class="nav-item locked" id="nav-m8" onclick="navClick('m8')">
+<span class="icon">📚</span> Module 8: Content Strategy
+    </a>
+<a class="nav-item locked" id="nav-m9" onclick="navClick('m9')">
+<span class="icon">🔧</span> Module 9: SEO Tools &amp; Audits
+    </a>
+<a class="nav-item locked" id="nav-m10" onclick="navClick('m10')">
+<span class="icon">🎓</span> Module 10: Advanced SEO
+      <span class="badge">ADV</span>
+</a>
+<a class="nav-item locked" id="nav-m11" onclick="navClick('m11')">
+<span class="icon">🛒</span> Module 11: E-Commerce SEO
+      <span class="badge" style="background:var(--green)">NEW</span>
+</a>
+<a class="nav-item locked" id="nav-m12" onclick="navClick('m12')">
+<span class="icon">🤖</span> Module 12: AI &amp; Future SEO
+      <span class="badge" style="background:var(--green)">NEW</span>
+</a>
+<div class="nav-section">Practice</div>
+<a class="nav-item" onclick="showSection('assignments')">
+<span class="icon">📝</span> Assignments
+    </a>
+</nav>
+</div>
 <!-- MAIN -->
 <div class="main">
-  <div class="topbar">
-    <h1 id="page-title">SEO Training Program</h1>
-    <div class="progress-wrap">
-      <span id="progress-text">0% Complete</span>
-      <div class="progress-bar"><div class="progress-fill" id="progress-fill"></div></div>
-    </div>
-  </div>
-
-  <div class="content">
-
-    <!-- HOME / DASHBOARD -->
-    <div class="section active" id="home">
-      <div class="hero">
-        <div class="hero-badge">✨ Intern Training Program</div>
-        <h1>Master SEO from <br>Scratch to Advanced</h1>
-        <p>A complete, structured learning path designed by Hirush Global to help you become a confident SEO professional.</p>
-        <div class="hero-stats">
-          <div class="hero-stat"><div class="num">12</div><div class="lbl">Modules</div></div>
-          <div class="hero-stat"><div class="num">4</div><div class="lbl">Projects</div></div>
-          <div class="hero-stat"><div class="num">50+</div><div class="lbl">Topics</div></div>
-          <div class="hero-stat"><div class="num">∞</div><div class="lbl">Growth</div></div>
-        </div>
-      </div>
-
-      <div style="background:white;border-radius:16px;padding:20px 24px;margin-bottom:28px;border:1.5px solid #bbf7d0;display:flex;align-items:flex-start;gap:16px">
-        <div style="font-size:2rem;flex-shrink:0">🌱</div>
-        <div>
-          <div style="font-weight:700;color:#15803d;font-size:0.85rem;text-transform:uppercase;letter-spacing:0.8px;margin-bottom:4px">New to SEO? Here's how to use this course</div>
-          <p style="font-size:0.88rem;color:#166534;line-height:1.65;margin:0">Each module has <strong>plain-English explanations</strong>, <strong>real-world examples</strong>, and <strong>jargon definitions</strong> on hover. Start with <strong>Module 1</strong> and go in order — each module unlocks after passing the quiz with 40%+.</p>
-        </div>
-      </div>
-
-      <div class="grid-3">
-        <div class="tool-card" onclick="showSection('m1')"><div class="tool-icon">🌐</div><div class="tool-name">Module 1</div><div class="tool-desc">Intro to SEO — How search engines work</div></div>
-        <div class="tool-card" onclick="navClick('m2')"><div class="tool-icon">🔍</div><div class="tool-name">Module 2</div><div class="tool-desc">Keyword Research — Tools &amp; strategies</div></div>
-        <div class="tool-card" onclick="navClick('m3')"><div class="tool-icon">🛠</div><div class="tool-name">Module 3</div><div class="tool-desc">On-Page SEO — HTML tags &amp; optimization</div></div>
-        <div class="tool-card" onclick="navClick('m4')"><div class="tool-icon">⚙️</div><div class="tool-name">Module 4</div><div class="tool-desc">Technical SEO — Site speed, crawling &amp; more</div></div>
-        <div class="tool-card" onclick="navClick('m5')"><div class="tool-icon">📈</div><div class="tool-name">Module 5</div><div class="tool-desc">GSC &amp; Analytics — Track your performance</div></div>
-        <div class="tool-card" onclick="navClick('m6')"><div class="tool-icon">🌍</div><div class="tool-name">Module 6</div><div class="tool-desc">Off-Page SEO — Backlinks &amp; authority</div></div>
-        <div class="tool-card" onclick="navClick('m7')"><div class="tool-icon">📍</div><div class="tool-name">Module 7</div><div class="tool-desc">Local SEO — Google Business Profile</div></div>
-        <div class="tool-card" onclick="navClick('m8')"><div class="tool-icon">📚</div><div class="tool-name">Module 8</div><div class="tool-desc">Content Strategy — E-E-A-T &amp; blogging</div></div>
-        <div class="tool-card" onclick="navClick('m9')"><div class="tool-icon">🔧</div><div class="tool-name">Module 9</div><div class="tool-desc">SEO Tools &amp; Audits — Complete checklist</div></div>
-      </div>
-
-      <div class="tip-box">
-        <div class="box-title">💡 How to use this guide</div>
+<div class="topbar">
+<h1 id="page-title">SEO Training Program</h1>
+<div class="progress-wrap">
+<span id="progress-text">0% Complete</span>
+<div class="progress-bar"><div class="progress-fill" id="progress-fill"></div></div>
+</div>
+</div>
+<div class="content">
+<!-- HOME / DASHBOARD -->
+<div class="section active" id="home">
+<div class="hero">
+<div class="hero-badge">✨ Intern Training Program</div>
+<h1>Master SEO from <br/>Scratch to Advanced</h1>
+<p>A complete, structured learning path designed by Hirush Global to help you become a confident SEO professional.</p>
+<div class="hero-stats">
+<div class="hero-stat"><div class="num">12</div><div class="lbl">Modules</div></div>
+<div class="hero-stat"><div class="num">4</div><div class="lbl">Projects</div></div>
+<div class="hero-stat"><div class="num">50+</div><div class="lbl">Topics</div></div>
+<div class="hero-stat"><div class="num">∞</div><div class="lbl">Growth</div></div>
+</div>
+</div>
+<div style="background:white;border-radius:16px;padding:20px 24px;margin-bottom:28px;border:1.5px solid #bbf7d0;display:flex;align-items:flex-start;gap:16px">
+<div style="font-size:2rem;flex-shrink:0">🌱</div>
+<div>
+<div style="font-weight:700;color:#15803d;font-size:0.85rem;text-transform:uppercase;letter-spacing:0.8px;margin-bottom:4px">New to SEO? Here's how to use this course</div>
+<p style="font-size:0.88rem;color:#166534;line-height:1.65;margin:0">Each module has <strong>plain-English explanations</strong>, <strong>real-world examples</strong>, and <strong>jargon definitions</strong> on hover. Start with <strong>Module 1</strong> and go in order — each module unlocks after passing the quiz with 40%+.</p>
+</div>
+</div>
+<div class="grid-3">
+<div class="tool-card" onclick="showSection('m1')"><div class="tool-icon">🌐</div><div class="tool-name">Module 1</div><div class="tool-desc">Intro to SEO — How search engines work</div></div>
+<div class="tool-card" onclick="navClick('m2')"><div class="tool-icon">🔍</div><div class="tool-name">Module 2</div><div class="tool-desc">Keyword Research — Tools &amp; strategies</div></div>
+<div class="tool-card" onclick="navClick('m3')"><div class="tool-icon">🛠</div><div class="tool-name">Module 3</div><div class="tool-desc">On-Page SEO — HTML tags &amp; optimization</div></div>
+<div class="tool-card" onclick="navClick('m4')"><div class="tool-icon">⚙️</div><div class="tool-name">Module 4</div><div class="tool-desc">Technical SEO — Site speed, crawling &amp; more</div></div>
+<div class="tool-card" onclick="navClick('m5')"><div class="tool-icon">📈</div><div class="tool-name">Module 5</div><div class="tool-desc">GSC &amp; Analytics — Track your performance</div></div>
+<div class="tool-card" onclick="navClick('m6')"><div class="tool-icon">🌍</div><div class="tool-name">Module 6</div><div class="tool-desc">Off-Page SEO — Backlinks &amp; authority</div></div>
+<div class="tool-card" onclick="navClick('m7')"><div class="tool-icon">📍</div><div class="tool-name">Module 7</div><div class="tool-desc">Local SEO — Google Business Profile</div></div>
+<div class="tool-card" onclick="navClick('m8')"><div class="tool-icon">📚</div><div class="tool-name">Module 8</div><div class="tool-desc">Content Strategy — E-E-A-T &amp; blogging</div></div>
+<div class="tool-card" onclick="navClick('m9')"><div class="tool-icon">🔧</div><div class="tool-name">Module 9</div><div class="tool-desc">SEO Tools &amp; Audits — Complete checklist</div></div>
+</div>
+<div class="tip-box">
+<div class="box-title">💡 How to use this guide</div>
         Go through each module in order. Read the concepts, study the examples, and complete the quiz with 40%+ to unlock the next module. By the end, you'll be ready to run a full SEO campaign!
       </div>
-    </div>
-
-    <!-- ═══════════════ MODULE TEMPLATE (repeated for each module) ═══════════════ -->
-    <!-- Each module below contains: header, cards, quiz card, nav buttons -->
-    <!-- The quiz cards use the fixed checkAnswer/scoreQuiz from the override script at bottom -->
-
-    <!-- MODULE 1 -->
-    <div class="section" id="m1">
-      <div class="module-header">
-        <div class="module-icon">🌐</div>
-        <div>
-          <h2>Module 1: Introduction to SEO</h2>
-          <p>Understand what SEO is, how search engines work, and why it matters for every online business.</p>
-        </div>
-      </div>
-
-      <div class="module-progress">
-        <span style="color:var(--muted);font-weight:500;">Your progress</span>
-        <div class="module-progress-bar"><div class="module-progress-fill"></div></div>
-        <span class="module-progress-label">0 / 0 opened</span>
-      </div>
-      <div class="expand-all-row">
-        <button class="btn-xs" onclick="expandAll('m1')">↓ Expand All</button>
-        <button class="btn-xs" onclick="collapseAll('m1')">↑ Collapse All</button>
-      </div>
-
-      <div class="card">
-        <h3>🤔 What is SEO? <span class="beginner-badge">🌱 Start here</span></h3>
-        <div class="plain-english">
-          <div class="pe-icon">💬</div>
-          <div class="pe-body">
-            <strong>In plain English</strong>
+</div>
+<!-- ═══════════════ MODULE TEMPLATE (repeated for each module) ═══════════════ -->
+<!-- Each module below contains: header, cards, quiz card, nav buttons -->
+<!-- The quiz cards use the fixed checkAnswer/scoreQuiz from the override script at bottom -->
+<!-- MODULE 1 -->
+<div class="section" id="m1">
+<div class="module-header">
+<div class="module-icon">🌐</div>
+<div>
+<h2>Module 1: Introduction to SEO</h2>
+<p>Understand what SEO is, how search engines work, and why it matters for every online business.</p>
+</div>
+</div>
+<div class="module-progress">
+<span style="color:var(--muted);font-weight:500;">Your progress</span>
+<div class="module-progress-bar"><div class="module-progress-fill"></div></div>
+<span class="module-progress-label">0 / 0 opened</span>
+</div>
+<div class="expand-all-row">
+<button class="btn-xs" onclick="expandAll('m1')">↓ Expand All</button>
+<button class="btn-xs" onclick="collapseAll('m1')">↑ Collapse All</button>
+</div>
+<div class="card">
+<h3>🤔 What is SEO? <span class="beginner-badge">🌱 Start here</span></h3>
+<div class="plain-english">
+<div class="pe-icon">💬</div>
+<div class="pe-body">
+<strong>In plain English</strong>
             SEO means making your website easy for Google to find and show to people. When someone types something into Google, SEO is the reason why some websites appear at the top and others don't.
           </div>
-        </div>
-        <p><strong>SEO (Search Engine Optimization)</strong> is the practice of improving your website so it appears higher in Google's search results — without paying for ads.</p>
-        <div class="analogy-box">
-          <div class="analogy-label">🏪 Think of it like this</div>
+</div>
+<p><strong>SEO (Search Engine Optimization)</strong> is the practice of improving your website so it appears higher in Google's search results — without paying for ads.</p>
+<div class="analogy-box">
+<div class="analogy-label">🏪 Think of it like this</div>
           Imagine Google is like a massive library, and your website is a book. SEO is making sure your book has a great title, clear chapters, and is shelved in the right section — so the librarian (Google) recommends it to the right readers.
         </div>
-        <div class="why-matters">
-          <div class="wm-label">💡 Why this matters</div>
+<div class="why-matters">
+<div class="wm-label">💡 Why this matters</div>
           93% of online experiences start with a search engine. If your website isn't on page 1 of Google, most people will never find it.
         </div>
-      </div>
-
-      <div class="card">
-        <h3>⚙️ How Search Engines Work</h3>
-        <div class="grid-3">
-          <div class="tool-card"><div class="tool-icon">🕷️</div><div class="tool-name">Step 1: Crawling</div><div class="tool-desc">Google sends robots (Googlebots) that visit websites and follow links — discovering new content 24/7.</div></div>
-          <div class="tool-card"><div class="tool-icon">📚</div><div class="tool-name">Step 2: Indexing</div><div class="tool-desc">Google reads and stores page content in its massive database. Pages not indexed cannot appear in search results.</div></div>
-          <div class="tool-card"><div class="tool-icon">🏆</div><div class="tool-name">Step 3: Ranking</div><div class="tool-desc">When someone searches, Google compares indexed pages and ranks them using 200+ signals. SEO improves those signals.</div></div>
-        </div>
-      </div>
-
-      <div class="card">
-        <h3>⚖️ White Hat vs Black Hat SEO</h3>
-        <div class="do-dont">
-          <div class="do-box">
-            <div class="dod-label">✅ White Hat (Do This)</div>
-            <ul>
-              <li>Write genuinely helpful content</li>
-              <li>Earn links naturally</li>
-              <li>Make your site fast and easy to use</li>
-              <li>Use keywords naturally</li>
-            </ul>
-          </div>
-          <div class="dont-box">
-            <div class="dod-label">❌ Black Hat (Never Do This)</div>
-            <ul>
-              <li>Stuff keywords unnaturally</li>
-              <li>Buy backlinks from spammy sites</li>
-              <li>Hide text to trick Google</li>
-              <li>Copy content from other sites</li>
-            </ul>
-          </div>
-        </div>
-      </div>
-
-      <div class="card">
-        <h3>🔑 Search Intent — Why People Search</h3>
-        <div class="grid-2">
-          <div class="tool-card"><div class="tool-icon">🔍</div><div class="tool-name">Informational — "I want to learn"</div><div class="tool-desc">Example: "how does SEO work" → Write a blog post or guide.</div></div>
-          <div class="tool-card"><div class="tool-icon">🧭</div><div class="tool-name">Navigational — "I want to go somewhere"</div><div class="tool-desc">Example: "Facebook login" → Your homepage or login page.</div></div>
-          <div class="tool-card"><div class="tool-icon">💰</div><div class="tool-name">Commercial — "I want to compare"</div><div class="tool-desc">Example: "best SEO tools 2024" → Comparison or review article.</div></div>
-          <div class="tool-card"><div class="tool-icon">🛒</div><div class="tool-name">Transactional — "I want to buy"</div><div class="tool-desc">Example: "buy Ahrefs plan" → Product or pricing page.</div></div>
-        </div>
-      </div>
-
-      <!-- MODULE 1 QUIZ -->
-
-      <!-- JIJO JOSEPH VIDEOS -->
-      <div class="module-videos">
-        <div class="module-videos-title">🎬 Watch: Jijo Joseph's SEO Tutorials</div>
-        <div class="module-videos-sub">Topic-wise video lessons by Jijo Joseph (Malayalam/English) — click to watch on YouTube</div>
-        <div class="vid-grid">
-      <a class="vid-item" href="https://www.youtube.com/watch?v=hP1-ciBlFnc" target="_blank" rel="noopener">
-        <div class="vid-thumb">
-          <img src="https://img.youtube.com/vi/hP1-ciBlFnc/hqdefault.jpg" alt="What is SEO? — Complete Explanation in Malayalam" loading="lazy">
-          <div class="vid-play"><svg width="18" height="18" viewBox="0 0 24 24" fill="white"><polygon points="5,3 19,12 5,21"/></svg></div>
-        </div>
-        <div class="vid-info">
-          <div class="vid-topic">What is SEO?</div>
-          <div class="vid-title-text">What is SEO? — Complete Explanation in Malayalam</div>
-          <div class="vid-channel-row">
-            <span class="vid-channel-name">Jijo Joseph</span>
-            <span class="vid-yt-badge">YouTube</span>
-          </div>
-        </div>
-      </a>
-      <a class="vid-item" href="https://www.youtube.com/watch?v=ipme9vPoKiE" target="_blank" rel="noopener">
-        <div class="vid-thumb">
-          <img src="https://img.youtube.com/vi/ipme9vPoKiE/hqdefault.jpg" alt="How Do Search Engines Work? Crawling, Indexing & Ranking" loading="lazy">
-          <div class="vid-play"><svg width="18" height="18" viewBox="0 0 24 24" fill="white"><polygon points="5,3 19,12 5,21"/></svg></div>
-        </div>
-        <div class="vid-info">
-          <div class="vid-topic">How Search Engines Work</div>
-          <div class="vid-title-text">How Do Search Engines Work? Crawling, Indexing & Ranking</div>
-          <div class="vid-channel-row">
-            <span class="vid-channel-name">Jijo Joseph</span>
-            <span class="vid-yt-badge">YouTube</span>
-          </div>
-        </div>
-      </a>
-      <a class="vid-item" href="https://www.youtube.com/watch?v=_UnpN3t4aQY" target="_blank" rel="noopener">
-        <div class="vid-thumb">
-          <img src="https://img.youtube.com/vi/_UnpN3t4aQY/hqdefault.jpg" alt="Organic Search vs Paid Search — Key Differences" loading="lazy">
-          <div class="vid-play"><svg width="18" height="18" viewBox="0 0 24 24" fill="white"><polygon points="5,3 19,12 5,21"/></svg></div>
-        </div>
-        <div class="vid-info">
-          <div class="vid-topic">Organic vs Paid Search</div>
-          <div class="vid-title-text">Organic Search vs Paid Search — Key Differences</div>
-          <div class="vid-channel-row">
-            <span class="vid-channel-name">Jijo Joseph</span>
-            <span class="vid-yt-badge">YouTube</span>
-          </div>
-        </div>
-      </a>
-      <a class="vid-item" href="https://www.youtube.com/watch?v=SLNG24w5Ux8" target="_blank" rel="noopener">
-        <div class="vid-thumb">
-          <img src="https://img.youtube.com/vi/SLNG24w5Ux8/hqdefault.jpg" alt="On-Page SEO Complete Guide in Malayalam" loading="lazy">
-          <div class="vid-play"><svg width="18" height="18" viewBox="0 0 24 24" fill="white"><polygon points="5,3 19,12 5,21"/></svg></div>
-        </div>
-        <div class="vid-info">
-          <div class="vid-topic">On-Page SEO Intro</div>
-          <div class="vid-title-text">On-Page SEO Complete Guide in Malayalam</div>
-          <div class="vid-channel-row">
-            <span class="vid-channel-name">Jijo Joseph</span>
-            <span class="vid-yt-badge">YouTube</span>
-          </div>
-        </div>
-      </a>
-        </div>
-      </div>
-      <div class="card" id="m1-quiz-card" style="border:1.5px solid #bfdbfe;background:#f8fbff;margin-top:8px">
-        <h3>🧠 Module Quiz — Test Your Knowledge</h3>
-        <p style="font-size:0.87rem;color:var(--muted);margin-bottom:18px">Answer all 5 questions, then click <strong>"See My Score"</strong>. Score <strong>40%+</strong> (2/5 correct) to unlock the next module.</p>
-        <div id="m1-quiz"></div>
-        <div style="margin-top:16px;display:flex;align-items:center;gap:12px;flex-wrap:wrap">
-          <button class="btn btn-primary" onclick="scoreQuiz('m1')">📊 See My Score</button>
-          <button class="btn btn-outline" onclick="retryQuiz('m1')">🔄 New Questions</button>
-        </div>
-        <div id="m1-score" style="display:none;margin-top:16px;padding:16px 20px;border-radius:12px;font-size:0.9rem;line-height:1.6"></div>
-        <div id="m1-unlock-banner" class="quiz-unlocked-banner">🔓 Module 2: Keyword Research is now unlocked in the sidebar!</div>
-      </div>
-
-      <div class="nav-buttons">
-        <button class="btn btn-primary btn-next-locked" onclick="navClick('m2')">Next Module →</button>
-      </div>
-      <p class="quiz-pass-hint">💡 Score 40%+ on the quiz above to unlock the next module</p>
-    </div>
-
-    <!-- MODULE 2 -->
-    <div class="section" id="m2">
-      <div class="module-header">
-        <div class="module-icon">🔍</div>
-        <div>
-          <h2>Module 2: Keyword Research</h2>
-          <p>Master the art of finding the right keywords — the foundation of every successful SEO strategy.</p>
-        </div>
-      </div>
-      <div class="module-progress">
-        <span style="color:var(--muted);font-weight:500;">Your progress</span>
-        <div class="module-progress-bar"><div class="module-progress-fill"></div></div>
-        <span class="module-progress-label">0 / 0 opened</span>
-      </div>
-      <div class="expand-all-row">
-        <button class="btn-xs" onclick="expandAll('m2')">↓ Expand All</button>
-        <button class="btn-xs" onclick="collapseAll('m2')">↑ Collapse All</button>
-      </div>
-
-      <div class="card">
-        <h3>🔑 What are Keywords? <span class="beginner-badge">🌱 Start here</span></h3>
-        <div class="plain-english"><div class="pe-icon">💬</div><div class="pe-body"><strong>In plain English</strong>Keywords are simply the words people type into Google. Figure out what words they type — and use those words on your pages.</div></div>
-        <div class="analogy-box"><div class="analogy-label">🎯 Simple analogy</div>Keywords are like radio frequencies. If you're broadcasting on the wrong frequency, nobody tunes in — even if your content is excellent.</div>
-      </div>
-
-      <div class="card">
-        <h3>📊 Types of Keywords</h3>
-        <table class="kw-table">
-          <tr><th>Type</th><th>Example</th><th>Difficulty</th><th>Best For</th></tr>
-          <tr><td><strong>Short-tail</strong> (1-2 words)</td><td>"shoes"</td><td>🔴 Extremely Hard</td><td>Big brands only</td></tr>
-          <tr><td><strong>Mid-tail</strong> (2-3 words)</td><td>"running shoes for men"</td><td>🟡 Moderate</td><td>Growing sites</td></tr>
-          <tr><td><strong>Long-tail ⭐</strong> (4+ words)</td><td>"best running shoes for flat feet under 3000"</td><td>🟢 Easy</td><td>New sites — start here!</td></tr>
-          <tr><td><strong>Local keywords</strong></td><td>"shoe shop near me"</td><td>🟢 Easy</td><td>Local businesses</td></tr>
-        </table>
-      </div>
-
-      <div class="card">
-        <h3>💡 Key Keyword Metrics</h3>
-        <div class="grid-3">
-          <div class="tool-card"><div class="tool-icon">📈</div><div class="tool-name">Search Volume</div><div class="tool-desc">How many people search per month. For beginners: target 100–1,000/month.</div></div>
-          <div class="tool-card"><div class="tool-icon">🏋️</div><div class="tool-name">Keyword Difficulty (KD)</div><div class="tool-desc">How hard to reach page 1 (0–100). For beginners: target KD under 20.</div></div>
-          <div class="tool-card"><div class="tool-icon">💰</div><div class="tool-name">CPC (Cost Per Click)</div><div class="tool-desc">What advertisers pay per click. High CPC = high commercial value even for organic SEO.</div></div>
-        </div>
-      </div>
-
-      <!-- MODULE 2 QUIZ -->
-
-      <!-- JIJO JOSEPH VIDEOS -->
-      <div class="module-videos">
-        <div class="module-videos-title">🎬 Watch: Jijo Joseph's SEO Tutorials</div>
-        <div class="module-videos-sub">Topic-wise video lessons by Jijo Joseph (Malayalam/English) — click to watch on YouTube</div>
-        <div class="vid-grid">
-      <a class="vid-item" href="https://www.youtube.com/watch?v=Yg2TSfwcSU0" target="_blank" rel="noopener">
-        <div class="vid-thumb">
-          <img src="https://img.youtube.com/vi/Yg2TSfwcSU0/hqdefault.jpg" alt="Long Tail vs Short Tail Keywords — Which to Target?" loading="lazy">
-          <div class="vid-play"><svg width="18" height="18" viewBox="0 0 24 24" fill="white"><polygon points="5,3 19,12 5,21"/></svg></div>
-        </div>
-        <div class="vid-info">
-          <div class="vid-topic">Long Tail vs Short Tail</div>
-          <div class="vid-title-text">Long Tail vs Short Tail Keywords — Which to Target?</div>
-          <div class="vid-channel-row">
-            <span class="vid-channel-name">Jijo Joseph</span>
-            <span class="vid-yt-badge">YouTube</span>
-          </div>
-        </div>
-      </a>
-      <a class="vid-item" href="https://www.youtube.com/watch?v=z9IrwMsBbSw" target="_blank" rel="noopener">
-        <div class="vid-thumb">
-          <img src="https://img.youtube.com/vi/z9IrwMsBbSw/hqdefault.jpg" alt="How to Do Keyword Research — Step by Step in Malayalam" loading="lazy">
-          <div class="vid-play"><svg width="18" height="18" viewBox="0 0 24 24" fill="white"><polygon points="5,3 19,12 5,21"/></svg></div>
-        </div>
-        <div class="vid-info">
-          <div class="vid-topic">Keyword Research</div>
-          <div class="vid-title-text">How to Do Keyword Research — Step by Step in Malayalam</div>
-          <div class="vid-channel-row">
-            <span class="vid-channel-name">Jijo Joseph</span>
-            <span class="vid-yt-badge">YouTube</span>
-          </div>
-        </div>
-      </a>
-      <a class="vid-item" href="https://www.youtube.com/watch?v=Ugh7xg_nkco" target="_blank" rel="noopener">
-        <div class="vid-thumb">
-          <img src="https://img.youtube.com/vi/Ugh7xg_nkco/hqdefault.jpg" alt="Google Keyword Planner Tutorial for Beginners" loading="lazy">
-          <div class="vid-play"><svg width="18" height="18" viewBox="0 0 24 24" fill="white"><polygon points="5,3 19,12 5,21"/></svg></div>
-        </div>
-        <div class="vid-info">
-          <div class="vid-topic">Google Keyword Planner</div>
-          <div class="vid-title-text">Google Keyword Planner Tutorial for Beginners</div>
-          <div class="vid-channel-row">
-            <span class="vid-channel-name">Jijo Joseph</span>
-            <span class="vid-yt-badge">YouTube</span>
-          </div>
-        </div>
-      </a>
-      <a class="vid-item" href="https://www.youtube.com/watch?v=ZNAaoQ2-pXk" target="_blank" rel="noopener">
-        <div class="vid-thumb">
-          <img src="https://img.youtube.com/vi/ZNAaoQ2-pXk/hqdefault.jpg" alt="Advanced Keyword Research Strategies — Malayalam" loading="lazy">
-          <div class="vid-play"><svg width="18" height="18" viewBox="0 0 24 24" fill="white"><polygon points="5,3 19,12 5,21"/></svg></div>
-        </div>
-        <div class="vid-info">
-          <div class="vid-topic">Advanced Keyword Research</div>
-          <div class="vid-title-text">Advanced Keyword Research Strategies — Malayalam</div>
-          <div class="vid-channel-row">
-            <span class="vid-channel-name">Jijo Joseph</span>
-            <span class="vid-yt-badge">YouTube</span>
-          </div>
-        </div>
-      </a>
-        </div>
-      </div>
-      <div class="card" id="m2-quiz-card" style="border:1.5px solid #bfdbfe;background:#f8fbff;margin-top:8px">
-        <h3>🧠 Module Quiz — Test Your Knowledge</h3>
-        <p style="font-size:0.87rem;color:var(--muted);margin-bottom:18px">Answer all 5 questions, then click <strong>"See My Score"</strong>. Score <strong>40%+</strong> to unlock the next module.</p>
-        <div id="m2-quiz"></div>
-        <div style="margin-top:16px;display:flex;align-items:center;gap:12px;flex-wrap:wrap">
-          <button class="btn btn-primary" onclick="scoreQuiz('m2')">📊 See My Score</button>
-          <button class="btn btn-outline" onclick="retryQuiz('m2')">🔄 New Questions</button>
-        </div>
-        <div id="m2-score" style="display:none;margin-top:16px;padding:16px 20px;border-radius:12px;font-size:0.9rem;line-height:1.6"></div>
-        <div id="m2-unlock-banner" class="quiz-unlocked-banner">🔓 Module 3: On-Page SEO is now unlocked!</div>
-      </div>
-      <div class="nav-buttons">
-        <button class="btn btn-outline" onclick="showSection('m1')">← Previous</button>
-        <button class="btn btn-primary btn-next-locked" onclick="navClick('m3')">Next Module →</button>
-      </div>
-      <p class="quiz-pass-hint">💡 Score 40%+ on the quiz above to unlock the next module</p>
-    </div>
-
-    <!-- MODULE 3 -->
-    <div class="section" id="m3">
-      <div class="module-header">
-        <div class="module-icon">🛠</div>
-        <div><h2>Module 3: On-Page SEO</h2><p>Optimize every element on your web pages to maximize rankings and click-through rates.</p></div>
-      </div>
-      <div class="module-progress"><span style="color:var(--muted);font-weight:500;">Your progress</span><div class="module-progress-bar"><div class="module-progress-fill"></div></div><span class="module-progress-label">0 / 0 opened</span></div>
-      <div class="expand-all-row"><button class="btn-xs" onclick="expandAll('m3')">↓ Expand All</button><button class="btn-xs" onclick="collapseAll('m3')">↑ Collapse All</button></div>
-
-      <div class="card">
-        <h3>📄 Title Tag &amp; Meta Description</h3>
-        <ul class="checklist">
-          <li><span class="check-icon">✓</span> Title: 50–60 characters, include primary keyword near start</li>
-          <li><span class="check-icon">✓</span> Meta description: 150–160 characters with keyword + CTA</li>
-          <li><span class="check-icon">✓</span> Unique title and meta for every page</li>
-        </ul>
-      </div>
-      <div class="card">
-        <h3>🔤 Heading Structure (H1 to H6)</h3>
-        <div class="plain-english"><div class="pe-icon">💬</div><div class="pe-body"><strong>In plain English</strong>Headings are like chapter titles. H1 is the main title (one per page!), H2s are chapters, H3s are sub-sections.</div></div>
-        <div class="warning-box"><div class="box-title">⚠️ Common Mistakes</div>❌ Multiple H1 tags &nbsp; ❌ Skipping heading levels &nbsp; ❌ No keywords in H1 &nbsp; ❌ Using headings just for styling</div>
-      </div>
-      <div class="card">
-        <h3>🖼️ Image Optimization &amp; Internal Linking</h3>
-        <ul class="checklist">
-          <li><span class="check-icon">✓</span> Descriptive file names: keyword-research-tools.webp</li>
-          <li><span class="check-icon">✓</span> Alt text on every image describing the image + keyword</li>
-          <li><span class="check-icon">✓</span> Convert to WebP format for 30% smaller files</li>
-          <li><span class="check-icon">✓</span> Use keyword-rich anchor text for internal links — not "click here"</li>
-          <li><span class="check-icon">✓</span> At least 3–5 internal links per page to relevant content</li>
-        </ul>
-      </div>
-
-      <!-- MODULE 3 QUIZ -->
-
-      <!-- JIJO JOSEPH VIDEOS -->
-      <div class="module-videos">
-        <div class="module-videos-title">🎬 Watch: Jijo Joseph's SEO Tutorials</div>
-        <div class="module-videos-sub">Topic-wise video lessons by Jijo Joseph (Malayalam/English) — click to watch on YouTube</div>
-        <div class="vid-grid">
-      <a class="vid-item" href="https://www.youtube.com/watch?v=HxOQ5nyAXn8" target="_blank" rel="noopener">
-        <div class="vid-thumb">
-          <img src="https://img.youtube.com/vi/HxOQ5nyAXn8/hqdefault.jpg" alt="What is a Meta Title Tag? — SEO Tutorial in Malayalam" loading="lazy">
-          <div class="vid-play"><svg width="18" height="18" viewBox="0 0 24 24" fill="white"><polygon points="5,3 19,12 5,21"/></svg></div>
-        </div>
-        <div class="vid-info">
-          <div class="vid-topic">Meta Title Tags</div>
-          <div class="vid-title-text">What is a Meta Title Tag? — SEO Tutorial in Malayalam</div>
-          <div class="vid-channel-row">
-            <span class="vid-channel-name">Jijo Joseph</span>
-            <span class="vid-yt-badge">YouTube</span>
-          </div>
-        </div>
-      </a>
-      <a class="vid-item" href="https://www.youtube.com/watch?v=tPpiK4-iFm8" target="_blank" rel="noopener">
-        <div class="vid-thumb">
-          <img src="https://img.youtube.com/vi/tPpiK4-iFm8/hqdefault.jpg" alt="Importance of Meta Description in SEO" loading="lazy">
-          <div class="vid-play"><svg width="18" height="18" viewBox="0 0 24 24" fill="white"><polygon points="5,3 19,12 5,21"/></svg></div>
-        </div>
-        <div class="vid-info">
-          <div class="vid-topic">Meta Description</div>
-          <div class="vid-title-text">Importance of Meta Description in SEO</div>
-          <div class="vid-channel-row">
-            <span class="vid-channel-name">Jijo Joseph</span>
-            <span class="vid-yt-badge">YouTube</span>
-          </div>
-        </div>
-      </a>
-      <a class="vid-item" href="https://www.youtube.com/watch?v=2t2wWReeb7s" target="_blank" rel="noopener">
-        <div class="vid-thumb">
-          <img src="https://img.youtube.com/vi/2t2wWReeb7s/hqdefault.jpg" alt="How to Create SEO-Friendly URLs — Malayalam Guide" loading="lazy">
-          <div class="vid-play"><svg width="18" height="18" viewBox="0 0 24 24" fill="white"><polygon points="5,3 19,12 5,21"/></svg></div>
-        </div>
-        <div class="vid-info">
-          <div class="vid-topic">SEO-Friendly URLs</div>
-          <div class="vid-title-text">How to Create SEO-Friendly URLs — Malayalam Guide</div>
-          <div class="vid-channel-row">
-            <span class="vid-channel-name">Jijo Joseph</span>
-            <span class="vid-yt-badge">YouTube</span>
-          </div>
-        </div>
-      </a>
-      <a class="vid-item" href="https://www.youtube.com/watch?v=IlhZIsGP6pA" target="_blank" rel="noopener">
-        <div class="vid-thumb">
-          <img src="https://img.youtube.com/vi/IlhZIsGP6pA/hqdefault.jpg" alt="Internal Linking in SEO — Complete Tutorial" loading="lazy">
-          <div class="vid-play"><svg width="18" height="18" viewBox="0 0 24 24" fill="white"><polygon points="5,3 19,12 5,21"/></svg></div>
-        </div>
-        <div class="vid-info">
-          <div class="vid-topic">Internal Linking</div>
-          <div class="vid-title-text">Internal Linking in SEO — Complete Tutorial</div>
-          <div class="vid-channel-row">
-            <span class="vid-channel-name">Jijo Joseph</span>
-            <span class="vid-yt-badge">YouTube</span>
-          </div>
-        </div>
-      </a>
-        </div>
-      </div>
-      <div class="card" id="m3-quiz-card" style="border:1.5px solid #bfdbfe;background:#f8fbff;margin-top:8px">
-        <h3>🧠 Module Quiz</h3>
-        <p style="font-size:0.87rem;color:var(--muted);margin-bottom:18px">Answer all 5 questions, then click <strong>"See My Score"</strong>. Score <strong>40%+</strong> to unlock the next module.</p>
-        <div id="m3-quiz"></div>
-        <div style="margin-top:16px;display:flex;align-items:center;gap:12px;flex-wrap:wrap">
-          <button class="btn btn-primary" onclick="scoreQuiz('m3')">📊 See My Score</button>
-          <button class="btn btn-outline" onclick="retryQuiz('m3')">🔄 New Questions</button>
-        </div>
-        <div id="m3-score" style="display:none;margin-top:16px;padding:16px 20px;border-radius:12px;font-size:0.9rem;line-height:1.6"></div>
-        <div id="m3-unlock-banner" class="quiz-unlocked-banner">🔓 Module 4: Technical SEO is now unlocked!</div>
-      </div>
-      <div class="nav-buttons">
-        <button class="btn btn-outline" onclick="showSection('m2')">← Previous</button>
-        <button class="btn btn-primary btn-next-locked" onclick="navClick('m4')">Next Module →</button>
-      </div>
-      <p class="quiz-pass-hint">💡 Score 40%+ on the quiz above to unlock the next module</p>
-    </div>
-
-    <!-- MODULE 4 -->
-    <div class="section" id="m4">
-      <div class="module-header"><div class="module-icon">⚙️</div><div><h2>Module 4: Technical SEO</h2><p>Ensure Google can find, crawl, and index your website efficiently.</p></div></div>
-      <div class="module-progress"><span style="color:var(--muted);font-weight:500;">Your progress</span><div class="module-progress-bar"><div class="module-progress-fill"></div></div><span class="module-progress-label">0 / 0 opened</span></div>
-      <div class="expand-all-row"><button class="btn-xs" onclick="expandAll('m4')">↓ Expand All</button><button class="btn-xs" onclick="collapseAll('m4')">↑ Collapse All</button></div>
-      <div class="card">
-        <h3>⚡ Core Web Vitals</h3>
-        <table class="kw-table">
-          <tr><th>Metric</th><th>Measures</th><th>Good Score</th></tr>
-          <tr><td><strong>LCP</strong></td><td>How fast main content loads</td><td>Under 2.5s</td></tr>
-          <tr><td><strong>INP</strong></td><td>How fast page responds to clicks</td><td>Under 200ms</td></tr>
-          <tr><td><strong>CLS</strong></td><td>How much content jumps while loading</td><td>Under 0.1</td></tr>
-        </table>
-      </div>
-      <div class="card">
-        <h3>🗺️ Sitemaps, robots.txt &amp; Redirects</h3>
-        <ul class="checklist">
-          <li><span class="check-icon">✓</span> XML sitemap submitted to Google Search Console</li>
-          <li><span class="check-icon">✓</span> robots.txt correctly blocks admin/cart pages only</li>
-          <li><span class="check-icon">✓</span> 301 redirects for all permanently moved pages</li>
-          <li><span class="check-icon">✓</span> HTTPS enabled with no mixed-content warnings</li>
-          <li><span class="check-icon">✓</span> No redirect chains (A → B → C → use A → C directly)</li>
-        </ul>
-      </div>
-      <!-- MODULE 4 QUIZ -->
-
-      <!-- JIJO JOSEPH VIDEOS -->
-      <div class="module-videos">
-        <div class="module-videos-title">🎬 Watch: Jijo Joseph's SEO Tutorials</div>
-        <div class="module-videos-sub">Topic-wise video lessons by Jijo Joseph (Malayalam/English) — click to watch on YouTube</div>
-        <div class="vid-grid">
-      <a class="vid-item" href="https://www.youtube.com/watch?v=yELynih_f7A" target="_blank" rel="noopener">
-        <div class="vid-thumb">
-          <img src="https://img.youtube.com/vi/yELynih_f7A/hqdefault.jpg" alt="The Role of Sitemaps in SEO — Malayalam Tutorial" loading="lazy">
-          <div class="vid-play"><svg width="18" height="18" viewBox="0 0 24 24" fill="white"><polygon points="5,3 19,12 5,21"/></svg></div>
-        </div>
-        <div class="vid-info">
-          <div class="vid-topic">Sitemaps in SEO</div>
-          <div class="vid-title-text">The Role of Sitemaps in SEO — Malayalam Tutorial</div>
-          <div class="vid-channel-row">
-            <span class="vid-channel-name">Jijo Joseph</span>
-            <span class="vid-yt-badge">YouTube</span>
-          </div>
-        </div>
-      </a>
-      <a class="vid-item" href="https://www.youtube.com/watch?v=d14p43IX5Zc" target="_blank" rel="noopener">
-        <div class="vid-thumb">
-          <img src="https://img.youtube.com/vi/d14p43IX5Zc/hqdefault.jpg" alt="Ultimate Guide to Robots.txt in SEO" loading="lazy">
-          <div class="vid-play"><svg width="18" height="18" viewBox="0 0 24 24" fill="white"><polygon points="5,3 19,12 5,21"/></svg></div>
-        </div>
-        <div class="vid-info">
-          <div class="vid-topic">Robots.txt</div>
-          <div class="vid-title-text">Ultimate Guide to Robots.txt in SEO</div>
-          <div class="vid-channel-row">
-            <span class="vid-channel-name">Jijo Joseph</span>
-            <span class="vid-yt-badge">YouTube</span>
-          </div>
-        </div>
-      </a>
-      <a class="vid-item" href="https://www.youtube.com/watch?v=UY-AmnJ3yUg" target="_blank" rel="noopener">
-        <div class="vid-thumb">
-          <img src="https://img.youtube.com/vi/UY-AmnJ3yUg/hqdefault.jpg" alt="An Overview of Canonical Tags — SEO Explained" loading="lazy">
-          <div class="vid-play"><svg width="18" height="18" viewBox="0 0 24 24" fill="white"><polygon points="5,3 19,12 5,21"/></svg></div>
-        </div>
-        <div class="vid-info">
-          <div class="vid-topic">Canonical Tags</div>
-          <div class="vid-title-text">An Overview of Canonical Tags — SEO Explained</div>
-          <div class="vid-channel-row">
-            <span class="vid-channel-name">Jijo Joseph</span>
-            <span class="vid-yt-badge">YouTube</span>
-          </div>
-        </div>
-      </a>
-      <a class="vid-item" href="https://www.youtube.com/watch?v=dJR1UkrX3HE" target="_blank" rel="noopener">
-        <div class="vid-thumb">
-          <img src="https://img.youtube.com/vi/dJR1UkrX3HE/hqdefault.jpg" alt="What is Schema Markup? — SEO Tutorial in Malayalam" loading="lazy">
-          <div class="vid-play"><svg width="18" height="18" viewBox="0 0 24 24" fill="white"><polygon points="5,3 19,12 5,21"/></svg></div>
-        </div>
-        <div class="vid-info">
-          <div class="vid-topic">Schema Markup</div>
-          <div class="vid-title-text">What is Schema Markup? — SEO Tutorial in Malayalam</div>
-          <div class="vid-channel-row">
-            <span class="vid-channel-name">Jijo Joseph</span>
-            <span class="vid-yt-badge">YouTube</span>
-          </div>
-        </div>
-      </a>
-        </div>
-      </div>
-      <div class="card" id="m4-quiz-card" style="border:1.5px solid #bfdbfe;background:#f8fbff;margin-top:8px">
-        <h3>🧠 Module Quiz</h3>
-        <p style="font-size:0.87rem;color:var(--muted);margin-bottom:18px">Answer all 5 questions, then click <strong>"See My Score"</strong>. Score <strong>40%+</strong> to unlock the next module.</p>
-        <div id="m4-quiz"></div>
-        <div style="margin-top:16px;display:flex;align-items:center;gap:12px;flex-wrap:wrap">
-          <button class="btn btn-primary" onclick="scoreQuiz('m4')">📊 See My Score</button>
-          <button class="btn btn-outline" onclick="retryQuiz('m4')">🔄 New Questions</button>
-        </div>
-        <div id="m4-score" style="display:none;margin-top:16px;padding:16px 20px;border-radius:12px;font-size:0.9rem;line-height:1.6"></div>
-        <div id="m4-unlock-banner" class="quiz-unlocked-banner">🔓 Module 5: GSC &amp; Analytics is now unlocked!</div>
-      </div>
-      <div class="nav-buttons">
-        <button class="btn btn-outline" onclick="showSection('m3')">← Previous</button>
-        <button class="btn btn-primary btn-next-locked" onclick="navClick('m5')">Next Module →</button>
-      </div>
-      <p class="quiz-pass-hint">💡 Score 40%+ on the quiz above to unlock the next module</p>
-    </div>
-
-    <!-- MODULES 5-12: abbreviated cards + quiz pattern (same structure) -->
-    <!-- MODULE 5 -->
-    <div class="section" id="m5">
-      <div class="module-header"><div class="module-icon">📈</div><div><h2>Module 5: Google Search Console &amp; Analytics</h2><p>Master the essential Google tools that show how your site performs in search.</p></div></div>
-      <div class="module-progress"><span style="color:var(--muted);font-weight:500;">Your progress</span><div class="module-progress-bar"><div class="module-progress-fill"></div></div><span class="module-progress-label">0 / 0 opened</span></div>
-      <div class="expand-all-row"><button class="btn-xs" onclick="expandAll('m5')">↓ Expand All</button><button class="btn-xs" onclick="collapseAll('m5')">↑ Collapse All</button></div>
-      <div class="card"><h3>🔍 Google Search Console Key Reports</h3><div class="grid-3"><div class="tool-card"><div class="tool-icon">📊</div><div class="tool-name">Performance</div><div class="tool-desc">Every keyword you rank for — impressions, clicks, CTR, average position.</div></div><div class="tool-card"><div class="tool-icon">📋</div><div class="tool-name">Index Coverage</div><div class="tool-desc">Which pages are indexed, which are excluded, and why.</div></div><div class="tool-card"><div class="tool-icon">🔗</div><div class="tool-name">Links Report</div><div class="tool-desc">Top linked pages, external domains linking to you, anchor texts.</div></div></div></div>
-      <div class="card"><h3>📊 Key GSC Metrics</h3><table class="kw-table"><tr><th>Metric</th><th>What it Means</th><th>Action if Low</th></tr><tr><td>Impressions</td><td>How many times your page appeared in results</td><td>Expand keyword targeting</td></tr><tr><td>Clicks</td><td>How many times users actually clicked</td><td>Improve title tags and meta descriptions</td></tr><tr><td>CTR</td><td>Clicks ÷ Impressions × 100</td><td>Rewrite titles/meta for better appeal</td></tr><tr><td>Avg. Position</td><td>Average ranking position for queries</td><td>Improve on-page SEO and build links</td></tr></table></div>
-
-      <!-- JIJO JOSEPH VIDEOS -->
-      <div class="module-videos">
-        <div class="module-videos-title">🎬 Watch: Jijo Joseph's SEO Tutorials</div>
-        <div class="module-videos-sub">Topic-wise video lessons by Jijo Joseph (Malayalam/English) — click to watch on YouTube</div>
-        <div class="vid-grid">
-      <a class="vid-item" href="https://www.youtube.com/watch?v=qOMMUsf-DK4" target="_blank" rel="noopener">
-        <div class="vid-thumb">
-          <img src="https://img.youtube.com/vi/qOMMUsf-DK4/hqdefault.jpg" alt="Google Search Console Full Tutorial in Malayalam" loading="lazy">
-          <div class="vid-play"><svg width="18" height="18" viewBox="0 0 24 24" fill="white"><polygon points="5,3 19,12 5,21"/></svg></div>
-        </div>
-        <div class="vid-info">
-          <div class="vid-topic">Google Search Console</div>
-          <div class="vid-title-text">Google Search Console Full Tutorial in Malayalam</div>
-          <div class="vid-channel-row">
-            <span class="vid-channel-name">Jijo Joseph</span>
-            <span class="vid-yt-badge">YouTube</span>
-          </div>
-        </div>
-      </a>
-      <a class="vid-item" href="https://www.youtube.com/watch?v=IKLrfFSbaU4" target="_blank" rel="noopener">
-        <div class="vid-thumb">
-          <img src="https://img.youtube.com/vi/IKLrfFSbaU4/hqdefault.jpg" alt="Google Tag Manager Tutorial — SEO Setup Guide" loading="lazy">
-          <div class="vid-play"><svg width="18" height="18" viewBox="0 0 24 24" fill="white"><polygon points="5,3 19,12 5,21"/></svg></div>
-        </div>
-        <div class="vid-info">
-          <div class="vid-topic">Google Tag Manager</div>
-          <div class="vid-title-text">Google Tag Manager Tutorial — SEO Setup Guide</div>
-          <div class="vid-channel-row">
-            <span class="vid-channel-name">Jijo Joseph</span>
-            <span class="vid-yt-badge">YouTube</span>
-          </div>
-        </div>
-      </a>
-      <a class="vid-item" href="https://www.youtube.com/watch?v=FafE2O62ApE" target="_blank" rel="noopener">
-        <div class="vid-thumb">
-          <img src="https://img.youtube.com/vi/FafE2O62ApE/hqdefault.jpg" alt="What is SEO Difficulty? — Keyword Research in Malayalam" loading="lazy">
-          <div class="vid-play"><svg width="18" height="18" viewBox="0 0 24 24" fill="white"><polygon points="5,3 19,12 5,21"/></svg></div>
-        </div>
-        <div class="vid-info">
-          <div class="vid-topic">SEO Difficulty</div>
-          <div class="vid-title-text">What is SEO Difficulty? — Keyword Research in Malayalam</div>
-          <div class="vid-channel-row">
-            <span class="vid-channel-name">Jijo Joseph</span>
-            <span class="vid-yt-badge">YouTube</span>
-          </div>
-        </div>
-      </a>
-      <a class="vid-item" href="https://www.youtube.com/watch?v=P5UKWoDHC_0" target="_blank" rel="noopener">
-        <div class="vid-thumb">
-          <img src="https://img.youtube.com/vi/P5UKWoDHC_0/hqdefault.jpg" alt="OGP / Open Graph Protocol — Everything You Need to Know" loading="lazy">
-          <div class="vid-play"><svg width="18" height="18" viewBox="0 0 24 24" fill="white"><polygon points="5,3 19,12 5,21"/></svg></div>
-        </div>
-        <div class="vid-info">
-          <div class="vid-topic">Open Graph Protocol</div>
-          <div class="vid-title-text">OGP / Open Graph Protocol — Everything You Need to Know</div>
-          <div class="vid-channel-row">
-            <span class="vid-channel-name">Jijo Joseph</span>
-            <span class="vid-yt-badge">YouTube</span>
-          </div>
-        </div>
-      </a>
-        </div>
-      </div>
-      <div class="card" id="m5-quiz-card" style="border:1.5px solid #bfdbfe;background:#f8fbff;margin-top:8px"><h3>🧠 Module Quiz</h3><p style="font-size:0.87rem;color:var(--muted);margin-bottom:18px">Answer all 5 questions, then click <strong>"See My Score"</strong>. Score <strong>40%+</strong> to unlock the next module.</p><div id="m5-quiz"></div><div style="margin-top:16px;display:flex;align-items:center;gap:12px;flex-wrap:wrap"><button class="btn btn-primary" onclick="scoreQuiz('m5')">📊 See My Score</button><button class="btn btn-outline" onclick="retryQuiz('m5')">🔄 New Questions</button></div><div id="m5-score" style="display:none;margin-top:16px;padding:16px 20px;border-radius:12px;font-size:0.9rem;line-height:1.6"></div><div id="m5-unlock-banner" class="quiz-unlocked-banner">🔓 Module 6: Off-Page SEO is now unlocked!</div></div>
-      <div class="nav-buttons"><button class="btn btn-outline" onclick="showSection('m4')">← Previous</button><button class="btn btn-primary btn-next-locked" onclick="navClick('m6')">Next Module →</button></div>
-      <p class="quiz-pass-hint">💡 Score 40%+ on the quiz above to unlock the next module</p>
-    </div>
-
-    <!-- MODULE 6 -->
-    <div class="section" id="m6">
-      <div class="module-header"><div class="module-icon">🌍</div><div><h2>Module 6: Off-Page SEO &amp; Link Building</h2><p>Build authority through backlinks, digital PR, and brand mentions.</p></div></div>
-      <div class="module-progress"><span style="color:var(--muted);font-weight:500;">Your progress</span><div class="module-progress-bar"><div class="module-progress-fill"></div></div><span class="module-progress-label">0 / 0 opened</span></div>
-      <div class="expand-all-row"><button class="btn-xs" onclick="expandAll('m6')">↓ Expand All</button><button class="btn-xs" onclick="collapseAll('m6')">↑ Collapse All</button></div>
-      <div class="card"><h3>🔗 What is a Backlink?</h3><div class="plain-english"><div class="pe-icon">💬</div><div class="pe-body"><strong>In plain English</strong>A backlink is a link from another website to yours. It acts as a "vote of trust." More high-quality votes = Google ranks you higher.</div></div><table class="kw-table"><tr><th>Type</th><th>Passes Authority?</th><th>When to Use</th></tr><tr><td>Dofollow</td><td>Yes ✅</td><td>Default — all natural links</td></tr><tr><td>Nofollow</td><td>No</td><td>Paid links, user-generated content</td></tr><tr><td>Sponsored</td><td>No</td><td>Paid ads/sponsored content</td></tr></table></div>
-      <div class="card"><h3>🏗️ White Hat Link Building Strategies</h3><div class="grid-2"><div class="tool-card"><div class="tool-icon">🪄</div><div class="tool-name">Guest Posting</div><div class="tool-desc">Write for another website in your niche. Include 1–2 natural links back to your site.</div></div><div class="tool-card"><div class="tool-icon">🔗</div><div class="tool-name">Broken Link Building</div><div class="tool-desc">Find broken links on other sites, create replacement content, email the webmaster.</div></div><div class="tool-card"><div class="tool-icon">📰</div><div class="tool-name">Digital PR</div><div class="tool-desc">Create newsworthy studies/surveys. Pitch to journalists for high-authority links.</div></div><div class="tool-card"><div class="tool-icon">🏆</div><div class="tool-name">Skyscraper Technique</div><div class="tool-desc">Find top-linked content → create something better → email sites that linked to original.</div></div></div></div>
-
-      <!-- JIJO JOSEPH VIDEOS -->
-      <div class="module-videos">
-        <div class="module-videos-title">🎬 Watch: Jijo Joseph's SEO Tutorials</div>
-        <div class="module-videos-sub">Topic-wise video lessons by Jijo Joseph (Malayalam/English) — click to watch on YouTube</div>
-        <div class="vid-grid">
-      <a class="vid-item" href="https://www.youtube.com/watch?v=z9IrwMsBbSw" target="_blank" rel="noopener">
-        <div class="vid-thumb">
-          <img src="https://img.youtube.com/vi/z9IrwMsBbSw/hqdefault.jpg" alt="How to Find Keywords for Link Building — Malayalam" loading="lazy">
-          <div class="vid-play"><svg width="18" height="18" viewBox="0 0 24 24" fill="white"><polygon points="5,3 19,12 5,21"/></svg></div>
-        </div>
-        <div class="vid-info">
-          <div class="vid-topic">Keyword Strategy for Links</div>
-          <div class="vid-title-text">How to Find Keywords for Link Building — Malayalam</div>
-          <div class="vid-channel-row">
-            <span class="vid-channel-name">Jijo Joseph</span>
-            <span class="vid-yt-badge">YouTube</span>
-          </div>
-        </div>
-      </a>
-      <a class="vid-item" href="https://www.youtube.com/watch?v=ZNAaoQ2-pXk" target="_blank" rel="noopener">
-        <div class="vid-thumb">
-          <img src="https://img.youtube.com/vi/ZNAaoQ2-pXk/hqdefault.jpg" alt="Advanced SEO Strategies for Off-Page Optimization" loading="lazy">
-          <div class="vid-play"><svg width="18" height="18" viewBox="0 0 24 24" fill="white"><polygon points="5,3 19,12 5,21"/></svg></div>
-        </div>
-        <div class="vid-info">
-          <div class="vid-topic">Advanced SEO Strategies</div>
-          <div class="vid-title-text">Advanced SEO Strategies for Off-Page Optimization</div>
-          <div class="vid-channel-row">
-            <span class="vid-channel-name">Jijo Joseph</span>
-            <span class="vid-yt-badge">YouTube</span>
-          </div>
-        </div>
-      </a>
-      <a class="vid-item" href="https://www.youtube.com/watch?v=hP1-ciBlFnc" target="_blank" rel="noopener">
-        <div class="vid-thumb">
-          <img src="https://img.youtube.com/vi/hP1-ciBlFnc/hqdefault.jpg" alt="SEO Authority Building — Backlinks & Domain Authority" loading="lazy">
-          <div class="vid-play"><svg width="18" height="18" viewBox="0 0 24 24" fill="white"><polygon points="5,3 19,12 5,21"/></svg></div>
-        </div>
-        <div class="vid-info">
-          <div class="vid-topic">Domain Authority Basics</div>
-          <div class="vid-title-text">SEO Authority Building — Backlinks & Domain Authority</div>
-          <div class="vid-channel-row">
-            <span class="vid-channel-name">Jijo Joseph</span>
-            <span class="vid-yt-badge">YouTube</span>
-          </div>
-        </div>
-      </a>
-      <a class="vid-item" href="https://www.youtube.com/watch?v=SLNG24w5Ux8" target="_blank" rel="noopener">
-        <div class="vid-thumb">
-          <img src="https://img.youtube.com/vi/SLNG24w5Ux8/hqdefault.jpg" alt="Off-Page SEO Complete Overview — What You Need to Know" loading="lazy">
-          <div class="vid-play"><svg width="18" height="18" viewBox="0 0 24 24" fill="white"><polygon points="5,3 19,12 5,21"/></svg></div>
-        </div>
-        <div class="vid-info">
-          <div class="vid-topic">Off-Page SEO Overview</div>
-          <div class="vid-title-text">Off-Page SEO Complete Overview — What You Need to Know</div>
-          <div class="vid-channel-row">
-            <span class="vid-channel-name">Jijo Joseph</span>
-            <span class="vid-yt-badge">YouTube</span>
-          </div>
-        </div>
-      </a>
-        </div>
-      </div>
-      <div class="card" id="m6-quiz-card" style="border:1.5px solid #bfdbfe;background:#f8fbff;margin-top:8px"><h3>🧠 Module Quiz</h3><p style="font-size:0.87rem;color:var(--muted);margin-bottom:18px">Answer all 5 questions, then click <strong>"See My Score"</strong>. Score <strong>40%+</strong> to unlock the next module.</p><div id="m6-quiz"></div><div style="margin-top:16px;display:flex;align-items:center;gap:12px;flex-wrap:wrap"><button class="btn btn-primary" onclick="scoreQuiz('m6')">📊 See My Score</button><button class="btn btn-outline" onclick="retryQuiz('m6')">🔄 New Questions</button></div><div id="m6-score" style="display:none;margin-top:16px;padding:16px 20px;border-radius:12px;font-size:0.9rem;line-height:1.6"></div><div id="m6-unlock-banner" class="quiz-unlocked-banner">🔓 Module 7: Local SEO is now unlocked!</div></div>
-      <div class="nav-buttons"><button class="btn btn-outline" onclick="showSection('m5')">← Previous</button><button class="btn btn-primary btn-next-locked" onclick="navClick('m7')">Next Module →</button></div>
-      <p class="quiz-pass-hint">💡 Score 40%+ on the quiz above to unlock the next module</p>
-    </div>
-
-    <!-- MODULE 7 -->
-    <div class="section" id="m7">
-      <div class="module-header"><div class="module-icon">📍</div><div><h2>Module 7: Local SEO</h2><p>Dominate local search results and attract customers in your geographic area.</p></div></div>
-      <div class="module-progress"><span style="color:var(--muted);font-weight:500;">Your progress</span><div class="module-progress-bar"><div class="module-progress-fill"></div></div><span class="module-progress-label">0 / 0 opened</span></div>
-      <div class="expand-all-row"><button class="btn-xs" onclick="expandAll('m7')">↓ Expand All</button><button class="btn-xs" onclick="collapseAll('m7')">↑ Collapse All</button></div>
-      <div class="card"><h3>🗺️ The Local Pack &amp; Google Business Profile</h3><div class="plain-english"><div class="pe-icon">💬</div><div class="pe-body"><strong>In plain English</strong>When someone searches "restaurant near me," Google shows a map with 3 businesses. This is the Local Pack. Getting into it is the #1 goal of Local SEO.</div></div><div class="grid-3"><div class="tool-card"><div class="tool-icon">📍</div><div class="tool-name">Proximity</div><div class="tool-desc">How close to the searcher.</div></div><div class="tool-card"><div class="tool-icon">🎯</div><div class="tool-name">Relevance</div><div class="tool-desc">Does your GBP match the search?</div></div><div class="tool-card"><div class="tool-icon">🏆</div><div class="tool-name">Prominence</div><div class="tool-desc">How well-known online (reviews, links, citations).</div></div></div></div>
-      <div class="card"><h3>📋 NAP Consistency &amp; Reviews</h3><div class="warning-box"><div class="box-title">⚠️ NAP must be IDENTICAL everywhere</div>Name, Address, Phone — inconsistencies across Google, Facebook, Justdial etc. confuse Google and hurt local rankings.</div><div class="tip-box"><div class="box-title">💡 Review Response Template</div>"Thank you [Name] for your feedback. We're sorry your experience didn't meet our standards. Please contact us at [phone/email] and we'll resolve this immediately."</div></div>
-
-      <!-- JIJO JOSEPH VIDEOS -->
-      <div class="module-videos">
-        <div class="module-videos-title">🎬 Watch: Jijo Joseph's SEO Tutorials</div>
-        <div class="module-videos-sub">Topic-wise video lessons by Jijo Joseph (Malayalam/English) — click to watch on YouTube</div>
-        <div class="vid-grid">
-      <a class="vid-item" href="https://www.youtube.com/watch?v=hP1-ciBlFnc" target="_blank" rel="noopener">
-        <div class="vid-thumb">
-          <img src="https://img.youtube.com/vi/hP1-ciBlFnc/hqdefault.jpg" alt="Local SEO Fundamentals — Google Business Profile" loading="lazy">
-          <div class="vid-play"><svg width="18" height="18" viewBox="0 0 24 24" fill="white"><polygon points="5,3 19,12 5,21"/></svg></div>
-        </div>
-        <div class="vid-info">
-          <div class="vid-topic">Local SEO Basics</div>
-          <div class="vid-title-text">Local SEO Fundamentals — Google Business Profile</div>
-          <div class="vid-channel-row">
-            <span class="vid-channel-name">Jijo Joseph</span>
-            <span class="vid-yt-badge">YouTube</span>
-          </div>
-        </div>
-      </a>
-      <a class="vid-item" href="https://www.youtube.com/watch?v=ipme9vPoKiE" target="_blank" rel="noopener">
-        <div class="vid-thumb">
-          <img src="https://img.youtube.com/vi/ipme9vPoKiE/hqdefault.jpg" alt="How Local Search Works — Proximity, Relevance & Prominence" loading="lazy">
-          <div class="vid-play"><svg width="18" height="18" viewBox="0 0 24 24" fill="white"><polygon points="5,3 19,12 5,21"/></svg></div>
-        </div>
-        <div class="vid-info">
-          <div class="vid-topic">Local Search Signals</div>
-          <div class="vid-title-text">How Local Search Works — Proximity, Relevance & Prominence</div>
-          <div class="vid-channel-row">
-            <span class="vid-channel-name">Jijo Joseph</span>
-            <span class="vid-yt-badge">YouTube</span>
-          </div>
-        </div>
-      </a>
-      <a class="vid-item" href="https://www.youtube.com/watch?v=Ugh7xg_nkco" target="_blank" rel="noopener">
-        <div class="vid-thumb">
-          <img src="https://img.youtube.com/vi/Ugh7xg_nkco/hqdefault.jpg" alt="Local SEO Keyword Research with Google Planner" loading="lazy">
-          <div class="vid-play"><svg width="18" height="18" viewBox="0 0 24 24" fill="white"><polygon points="5,3 19,12 5,21"/></svg></div>
-        </div>
-        <div class="vid-info">
-          <div class="vid-topic">Local Keyword Research</div>
-          <div class="vid-title-text">Local SEO Keyword Research with Google Planner</div>
-          <div class="vid-channel-row">
-            <span class="vid-channel-name">Jijo Joseph</span>
-            <span class="vid-yt-badge">YouTube</span>
-          </div>
-        </div>
-      </a>
-      <a class="vid-item" href="https://www.youtube.com/watch?v=z9IrwMsBbSw" target="_blank" rel="noopener">
-        <div class="vid-thumb">
-          <img src="https://img.youtube.com/vi/z9IrwMsBbSw/hqdefault.jpg" alt="NAP Consistency & Local Citations — SEO Guide" loading="lazy">
-          <div class="vid-play"><svg width="18" height="18" viewBox="0 0 24 24" fill="white"><polygon points="5,3 19,12 5,21"/></svg></div>
-        </div>
-        <div class="vid-info">
-          <div class="vid-topic">NAP & Citations</div>
-          <div class="vid-title-text">NAP Consistency & Local Citations — SEO Guide</div>
-          <div class="vid-channel-row">
-            <span class="vid-channel-name">Jijo Joseph</span>
-            <span class="vid-yt-badge">YouTube</span>
-          </div>
-        </div>
-      </a>
-        </div>
-      </div>
-      <div class="card" id="m7-quiz-card" style="border:1.5px solid #bfdbfe;background:#f8fbff;margin-top:8px"><h3>🧠 Module Quiz</h3><p style="font-size:0.87rem;color:var(--muted);margin-bottom:18px">Answer all 5 questions, then click <strong>"See My Score"</strong>. Score <strong>40%+</strong> to unlock the next module.</p><div id="m7-quiz"></div><div style="margin-top:16px;display:flex;align-items:center;gap:12px;flex-wrap:wrap"><button class="btn btn-primary" onclick="scoreQuiz('m7')">📊 See My Score</button><button class="btn btn-outline" onclick="retryQuiz('m7')">🔄 New Questions</button></div><div id="m7-score" style="display:none;margin-top:16px;padding:16px 20px;border-radius:12px;font-size:0.9rem;line-height:1.6"></div><div id="m7-unlock-banner" class="quiz-unlocked-banner">🔓 Module 8: Content Strategy is now unlocked!</div></div>
-      <div class="nav-buttons"><button class="btn btn-outline" onclick="showSection('m6')">← Previous</button><button class="btn btn-primary btn-next-locked" onclick="navClick('m8')">Next Module →</button></div>
-      <p class="quiz-pass-hint">💡 Score 40%+ on the quiz above to unlock the next module</p>
-    </div>
-
-    <!-- MODULE 8 -->
-    <div class="section" id="m8">
-      <div class="module-header"><div class="module-icon">📚</div><div><h2>Module 8: Content Strategy &amp; Blogging</h2><p>Create content that ranks, engages readers, and drives business results.</p></div></div>
-      <div class="module-progress"><span style="color:var(--muted);font-weight:500;">Your progress</span><div class="module-progress-bar"><div class="module-progress-fill"></div></div><span class="module-progress-label">0 / 0 opened</span></div>
-      <div class="expand-all-row"><button class="btn-xs" onclick="expandAll('m8')">↓ Expand All</button><button class="btn-xs" onclick="collapseAll('m8')">↑ Collapse All</button></div>
-      <div class="card"><h3>🏅 E-E-A-T: Google's Quality Standard</h3><table class="kw-table"><tr><th>Signal</th><th>Meaning</th><th>How to Show It</th></tr><tr><td>Experience (E)</td><td>First-hand knowledge</td><td>Personal stories, case studies, real examples</td></tr><tr><td>Expertise (E)</td><td>Deep knowledge</td><td>Author bio with credentials, authoritative sources</td></tr><tr><td>Authoritativeness (A)</td><td>Recognised authority</td><td>Backlinks from reputable sites, press coverage</td></tr><tr><td>Trustworthiness (T)</td><td>Accuracy &amp; transparency</td><td>Fact-checking, citations, HTTPS, contact info</td></tr></table></div>
-      <div class="card"><h3>📝 Blog Post SEO Framework</h3><ul class="checklist"><li><span class="check-icon">✓</span> Research keyword + analyze top 5 SERP results for expected format</li><li><span class="check-icon">✓</span> Write a detailed outline with H2/H3 headings covering all sub-topics</li><li><span class="check-icon">✓</span> Include primary keyword in first 100 words</li><li><span class="check-icon">✓</span> Add FAQ section targeting People Also Ask questions</li><li><span class="check-icon">✓</span> Add Article schema, internal links, compressed images with alt text</li></ul></div>
-
-      <!-- JIJO JOSEPH VIDEOS -->
-      <div class="module-videos">
-        <div class="module-videos-title">🎬 Watch: Jijo Joseph's SEO Tutorials</div>
-        <div class="module-videos-sub">Topic-wise video lessons by Jijo Joseph (Malayalam/English) — click to watch on YouTube</div>
-        <div class="vid-grid">
-      <a class="vid-item" href="https://www.youtube.com/watch?v=ZNAaoQ2-pXk" target="_blank" rel="noopener">
-        <div class="vid-thumb">
-          <img src="https://img.youtube.com/vi/ZNAaoQ2-pXk/hqdefault.jpg" alt="Content Strategy Keyword Research — Advanced Methods" loading="lazy">
-          <div class="vid-play"><svg width="18" height="18" viewBox="0 0 24 24" fill="white"><polygon points="5,3 19,12 5,21"/></svg></div>
-        </div>
-        <div class="vid-info">
-          <div class="vid-topic">Content Keyword Research</div>
-          <div class="vid-title-text">Content Strategy Keyword Research — Advanced Methods</div>
-          <div class="vid-channel-row">
-            <span class="vid-channel-name">Jijo Joseph</span>
-            <span class="vid-yt-badge">YouTube</span>
-          </div>
-        </div>
-      </a>
-      <a class="vid-item" href="https://www.youtube.com/watch?v=SLNG24w5Ux8" target="_blank" rel="noopener">
-        <div class="vid-thumb">
-          <img src="https://img.youtube.com/vi/SLNG24w5Ux8/hqdefault.jpg" alt="On-Page Content SEO — Write Content That Ranks" loading="lazy">
-          <div class="vid-play"><svg width="18" height="18" viewBox="0 0 24 24" fill="white"><polygon points="5,3 19,12 5,21"/></svg></div>
-        </div>
-        <div class="vid-info">
-          <div class="vid-topic">Content SEO</div>
-          <div class="vid-title-text">On-Page Content SEO — Write Content That Ranks</div>
-          <div class="vid-channel-row">
-            <span class="vid-channel-name">Jijo Joseph</span>
-            <span class="vid-yt-badge">YouTube</span>
-          </div>
-        </div>
-      </a>
-      <a class="vid-item" href="https://www.youtube.com/watch?v=HxOQ5nyAXn8" target="_blank" rel="noopener">
-        <div class="vid-thumb">
-          <img src="https://img.youtube.com/vi/HxOQ5nyAXn8/hqdefault.jpg" alt="Optimize Your Blog Titles for SEO — Jijo Joseph" loading="lazy">
-          <div class="vid-play"><svg width="18" height="18" viewBox="0 0 24 24" fill="white"><polygon points="5,3 19,12 5,21"/></svg></div>
-        </div>
-        <div class="vid-info">
-          <div class="vid-topic">Title Optimization</div>
-          <div class="vid-title-text">Optimize Your Blog Titles for SEO — Jijo Joseph</div>
-          <div class="vid-channel-row">
-            <span class="vid-channel-name">Jijo Joseph</span>
-            <span class="vid-yt-badge">YouTube</span>
-          </div>
-        </div>
-      </a>
-      <a class="vid-item" href="https://www.youtube.com/watch?v=IlhZIsGP6pA" target="_blank" rel="noopener">
-        <div class="vid-thumb">
-          <img src="https://img.youtube.com/vi/IlhZIsGP6pA/hqdefault.jpg" alt="Internal Linking Strategy for Blog Content" loading="lazy">
-          <div class="vid-play"><svg width="18" height="18" viewBox="0 0 24 24" fill="white"><polygon points="5,3 19,12 5,21"/></svg></div>
-        </div>
-        <div class="vid-info">
-          <div class="vid-topic">Internal Links for Content</div>
-          <div class="vid-title-text">Internal Linking Strategy for Blog Content</div>
-          <div class="vid-channel-row">
-            <span class="vid-channel-name">Jijo Joseph</span>
-            <span class="vid-yt-badge">YouTube</span>
-          </div>
-        </div>
-      </a>
-        </div>
-      </div>
-      <div class="card" id="m8-quiz-card" style="border:1.5px solid #bfdbfe;background:#f8fbff;margin-top:8px"><h3>🧠 Module Quiz</h3><p style="font-size:0.87rem;color:var(--muted);margin-bottom:18px">Answer all 5 questions, then click <strong>"See My Score"</strong>. Score <strong>40%+</strong> to unlock the next module.</p><div id="m8-quiz"></div><div style="margin-top:16px;display:flex;align-items:center;gap:12px;flex-wrap:wrap"><button class="btn btn-primary" onclick="scoreQuiz('m8')">📊 See My Score</button><button class="btn btn-outline" onclick="retryQuiz('m8')">🔄 New Questions</button></div><div id="m8-score" style="display:none;margin-top:16px;padding:16px 20px;border-radius:12px;font-size:0.9rem;line-height:1.6"></div><div id="m8-unlock-banner" class="quiz-unlocked-banner">🔓 Module 9: SEO Tools &amp; Audits is now unlocked!</div></div>
-      <div class="nav-buttons"><button class="btn btn-outline" onclick="showSection('m7')">← Previous</button><button class="btn btn-primary btn-next-locked" onclick="navClick('m9')">Next Module →</button></div>
-      <p class="quiz-pass-hint">💡 Score 40%+ on the quiz above to unlock the next module</p>
-    </div>
-
-    <!-- MODULE 9 -->
-    <div class="section" id="m9">
-      <div class="module-header"><div class="module-icon">🔧</div><div><h2>Module 9: SEO Tools &amp; Site Audits</h2><p>Master the professional tools used by SEO experts worldwide.</p></div></div>
-      <div class="module-progress"><span style="color:var(--muted);font-weight:500;">Your progress</span><div class="module-progress-bar"><div class="module-progress-fill"></div></div><span class="module-progress-label">0 / 0 opened</span></div>
-      <div class="expand-all-row"><button class="btn-xs" onclick="expandAll('m9')">↓ Expand All</button><button class="btn-xs" onclick="collapseAll('m9')">↑ Collapse All</button></div>
-      <div class="card"><h3>🛠 SEO Tools Quick Reference</h3><table class="kw-table"><tr><th>Tool</th><th>Best For</th><th>Price</th></tr><tr><td>Google Search Console</td><td>Performance, indexing, errors</td><td>Free</td></tr><tr><td>Google Analytics 4</td><td>User behaviour, traffic sources</td><td>Free</td></tr><tr><td>PageSpeed Insights</td><td>Core Web Vitals</td><td>Free</td></tr><tr><td>Screaming Frog</td><td>Technical crawl, broken links</td><td>Free/£259/yr</td></tr><tr><td>Ahrefs</td><td>Backlinks, keyword research</td><td>$99/mo</td></tr><tr><td>SEMrush</td><td>All-in-one SEO suite</td><td>$119/mo</td></tr><tr><td>Ubersuggest</td><td>Beginner keyword research</td><td>Free/$29/mo</td></tr></table></div>
-      <div class="card"><h3>🔬 SEO Audit Checklist</h3><div class="grid-2"><div><h4 style="color:var(--blue);margin-bottom:8px">Technical</h4><ul class="checklist"><li><span class="check-icon">✓</span> HTTPS enabled</li><li><span class="check-icon">✓</span> robots.txt correctly configured</li><li><span class="check-icon">✓</span> XML sitemap submitted to GSC</li><li><span class="check-icon">✓</span> No redirect chains</li><li><span class="check-icon">✓</span> Core Web Vitals pass all thresholds</li><li><span class="check-icon">✓</span> Mobile-friendly test passes</li></ul></div><div><h4 style="color:var(--blue);margin-bottom:8px">On-Page &amp; Content</h4><ul class="checklist"><li><span class="check-icon">✓</span> Unique title tag per page (50–60 chars)</li><li><span class="check-icon">✓</span> Unique meta description (150–160 chars)</li><li><span class="check-icon">✓</span> One H1 per page with primary keyword</li><li><span class="check-icon">✓</span> All images have alt text</li><li><span class="check-icon">✓</span> No duplicate content issues</li><li><span class="check-icon">✓</span> Schema markup implemented</li></ul></div></div></div>
-
-      <!-- JIJO JOSEPH VIDEOS -->
-      <div class="module-videos">
-        <div class="module-videos-title">🎬 Watch: Jijo Joseph's SEO Tutorials</div>
-        <div class="module-videos-sub">Topic-wise video lessons by Jijo Joseph (Malayalam/English) — click to watch on YouTube</div>
-        <div class="vid-grid">
-      <a class="vid-item" href="https://www.youtube.com/watch?v=qOMMUsf-DK4" target="_blank" rel="noopener">
-        <div class="vid-thumb">
-          <img src="https://img.youtube.com/vi/qOMMUsf-DK4/hqdefault.jpg" alt="Using Google Search Console for SEO Audits" loading="lazy">
-          <div class="vid-play"><svg width="18" height="18" viewBox="0 0 24 24" fill="white"><polygon points="5,3 19,12 5,21"/></svg></div>
-        </div>
-        <div class="vid-info">
-          <div class="vid-topic">GSC for Audits</div>
-          <div class="vid-title-text">Using Google Search Console for SEO Audits</div>
-          <div class="vid-channel-row">
-            <span class="vid-channel-name">Jijo Joseph</span>
-            <span class="vid-yt-badge">YouTube</span>
-          </div>
-        </div>
-      </a>
-      <a class="vid-item" href="https://www.youtube.com/watch?v=IKLrfFSbaU4" target="_blank" rel="noopener">
-        <div class="vid-thumb">
-          <img src="https://img.youtube.com/vi/IKLrfFSbaU4/hqdefault.jpg" alt="Google Tag Manager — Complete SEO Setup" loading="lazy">
-          <div class="vid-play"><svg width="18" height="18" viewBox="0 0 24 24" fill="white"><polygon points="5,3 19,12 5,21"/></svg></div>
-        </div>
-        <div class="vid-info">
-          <div class="vid-topic">Tag Manager Setup</div>
-          <div class="vid-title-text">Google Tag Manager — Complete SEO Setup</div>
-          <div class="vid-channel-row">
-            <span class="vid-channel-name">Jijo Joseph</span>
-            <span class="vid-yt-badge">YouTube</span>
-          </div>
-        </div>
-      </a>
-      <a class="vid-item" href="https://www.youtube.com/watch?v=dJR1UkrX3HE" target="_blank" rel="noopener">
-        <div class="vid-thumb">
-          <img src="https://img.youtube.com/vi/dJR1UkrX3HE/hqdefault.jpg" alt="Using Schema Markup — Technical SEO Tools Guide" loading="lazy">
-          <div class="vid-play"><svg width="18" height="18" viewBox="0 0 24 24" fill="white"><polygon points="5,3 19,12 5,21"/></svg></div>
-        </div>
-        <div class="vid-info">
-          <div class="vid-topic">Schema for Tools</div>
-          <div class="vid-title-text">Using Schema Markup — Technical SEO Tools Guide</div>
-          <div class="vid-channel-row">
-            <span class="vid-channel-name">Jijo Joseph</span>
-            <span class="vid-yt-badge">YouTube</span>
-          </div>
-        </div>
-      </a>
-      <a class="vid-item" href="https://www.youtube.com/watch?v=yELynih_f7A" target="_blank" rel="noopener">
-        <div class="vid-thumb">
-          <img src="https://img.youtube.com/vi/yELynih_f7A/hqdefault.jpg" alt="Sitemap Submission & SEO Audit Checklist" loading="lazy">
-          <div class="vid-play"><svg width="18" height="18" viewBox="0 0 24 24" fill="white"><polygon points="5,3 19,12 5,21"/></svg></div>
-        </div>
-        <div class="vid-info">
-          <div class="vid-topic">Sitemap & Audit</div>
-          <div class="vid-title-text">Sitemap Submission & SEO Audit Checklist</div>
-          <div class="vid-channel-row">
-            <span class="vid-channel-name">Jijo Joseph</span>
-            <span class="vid-yt-badge">YouTube</span>
-          </div>
-        </div>
-      </a>
-        </div>
-      </div>
-      <div class="card" id="m9-quiz-card" style="border:1.5px solid #bfdbfe;background:#f8fbff;margin-top:8px"><h3>🧠 Module Quiz</h3><p style="font-size:0.87rem;color:var(--muted);margin-bottom:18px">Answer all 5 questions, then click <strong>"See My Score"</strong>. Score <strong>40%+</strong> to unlock the next module.</p><div id="m9-quiz"></div><div style="margin-top:16px;display:flex;align-items:center;gap:12px;flex-wrap:wrap"><button class="btn btn-primary" onclick="scoreQuiz('m9')">📊 See My Score</button><button class="btn btn-outline" onclick="retryQuiz('m9')">🔄 New Questions</button></div><div id="m9-score" style="display:none;margin-top:16px;padding:16px 20px;border-radius:12px;font-size:0.9rem;line-height:1.6"></div><div id="m9-unlock-banner" class="quiz-unlocked-banner">🔓 Module 10: Advanced SEO is now unlocked!</div></div>
-      <div class="nav-buttons"><button class="btn btn-outline" onclick="showSection('m8')">← Previous</button><button class="btn btn-primary btn-next-locked" onclick="navClick('m10')">Next Module →</button></div>
-      <p class="quiz-pass-hint">💡 Score 40%+ on the quiz above to unlock the next module</p>
-    </div>
-
-    <!-- MODULE 10 -->
-    <div class="section" id="m10">
-      <div class="module-header"><div class="module-icon">🎓</div><div><h2>Module 10: Advanced SEO Techniques</h2><p>Level up with advanced strategies used by top SEO professionals.</p></div></div>
-      <div class="module-progress"><span style="color:var(--muted);font-weight:500;">Your progress</span><div class="module-progress-bar"><div class="module-progress-fill"></div></div><span class="module-progress-label">0 / 0 opened</span></div>
-      <div class="expand-all-row"><button class="btn-xs" onclick="expandAll('m10')">↓ Expand All</button><button class="btn-xs" onclick="collapseAll('m10')">↑ Collapse All</button></div>
-      <div class="card"><h3>📋 Advanced Schema &amp; International SEO</h3><div class="grid-3"><div class="tool-card"><div class="tool-icon">❓</div><div class="tool-name">FAQ Schema</div><div class="tool-desc">Shows expandable Q&amp;A in search results — increases CTR by 20–30%.</div></div><div class="tool-card"><div class="tool-icon">⭐</div><div class="tool-name">Review Schema</div><div class="tool-desc">Shows star ratings under your title in search results.</div></div><div class="tool-card"><div class="tool-icon">🌐</div><div class="tool-name">hreflang Tags</div><div class="tool-desc">Tell Google which language/region version to show to which audience.</div></div></div></div>
-      <div class="card"><h3>📜 Google Algorithm Updates</h3><table class="kw-table"><tr><th>Update</th><th>What It Did</th><th>SEO Lesson</th></tr><tr><td>🐼 Panda (2011)</td><td>Penalised thin/duplicate content</td><td>Quality over quantity</td></tr><tr><td>🐧 Penguin (2012)</td><td>Penalised spammy backlinks</td><td>Earn links naturally</td></tr><tr><td>🧠 RankBrain (2015)</td><td>AI to interpret complex queries</td><td>User experience matters</td></tr><tr><td>📝 Helpful Content (2022)</td><td>Rewarded people-first content</td><td>Write for people, not bots</td></tr></table></div>
-
-      <!-- JIJO JOSEPH VIDEOS -->
-      <div class="module-videos">
-        <div class="module-videos-title">🎬 Watch: Jijo Joseph's SEO Tutorials</div>
-        <div class="module-videos-sub">Topic-wise video lessons by Jijo Joseph (Malayalam/English) — click to watch on YouTube</div>
-        <div class="vid-grid">
-      <a class="vid-item" href="https://www.youtube.com/watch?v=UY-AmnJ3yUg" target="_blank" rel="noopener">
-        <div class="vid-thumb">
-          <img src="https://img.youtube.com/vi/UY-AmnJ3yUg/hqdefault.jpg" alt="Canonical Tags & Duplicate Content — Advanced SEO" loading="lazy">
-          <div class="vid-play"><svg width="18" height="18" viewBox="0 0 24 24" fill="white"><polygon points="5,3 19,12 5,21"/></svg></div>
-        </div>
-        <div class="vid-info">
-          <div class="vid-topic">Canonical & Duplicate Content</div>
-          <div class="vid-title-text">Canonical Tags & Duplicate Content — Advanced SEO</div>
-          <div class="vid-channel-row">
-            <span class="vid-channel-name">Jijo Joseph</span>
-            <span class="vid-yt-badge">YouTube</span>
-          </div>
-        </div>
-      </a>
-      <a class="vid-item" href="https://www.youtube.com/watch?v=d14p43IX5Zc" target="_blank" rel="noopener">
-        <div class="vid-thumb">
-          <img src="https://img.youtube.com/vi/d14p43IX5Zc/hqdefault.jpg" alt="Advanced Robots.txt Configurations for Technical SEO" loading="lazy">
-          <div class="vid-play"><svg width="18" height="18" viewBox="0 0 24 24" fill="white"><polygon points="5,3 19,12 5,21"/></svg></div>
-        </div>
-        <div class="vid-info">
-          <div class="vid-topic">Robots.txt Advanced</div>
-          <div class="vid-title-text">Advanced Robots.txt Configurations for Technical SEO</div>
-          <div class="vid-channel-row">
-            <span class="vid-channel-name">Jijo Joseph</span>
-            <span class="vid-yt-badge">YouTube</span>
-          </div>
-        </div>
-      </a>
-      <a class="vid-item" href="https://www.youtube.com/watch?v=ZNAaoQ2-pXk" target="_blank" rel="noopener">
-        <div class="vid-thumb">
-          <img src="https://img.youtube.com/vi/ZNAaoQ2-pXk/hqdefault.jpg" alt="Advanced Keyword Research for Competitive Niches" loading="lazy">
-          <div class="vid-play"><svg width="18" height="18" viewBox="0 0 24 24" fill="white"><polygon points="5,3 19,12 5,21"/></svg></div>
-        </div>
-        <div class="vid-info">
-          <div class="vid-topic">Advanced Keyword Tactics</div>
-          <div class="vid-title-text">Advanced Keyword Research for Competitive Niches</div>
-          <div class="vid-channel-row">
-            <span class="vid-channel-name">Jijo Joseph</span>
-            <span class="vid-yt-badge">YouTube</span>
-          </div>
-        </div>
-      </a>
-      <a class="vid-item" href="https://www.youtube.com/watch?v=dJR1UkrX3HE" target="_blank" rel="noopener">
-        <div class="vid-thumb">
-          <img src="https://img.youtube.com/vi/dJR1UkrX3HE/hqdefault.jpg" alt="Advanced Schema Markup for Rich Results in Google" loading="lazy">
-          <div class="vid-play"><svg width="18" height="18" viewBox="0 0 24 24" fill="white"><polygon points="5,3 19,12 5,21"/></svg></div>
-        </div>
-        <div class="vid-info">
-          <div class="vid-topic">Structured Data Advanced</div>
-          <div class="vid-title-text">Advanced Schema Markup for Rich Results in Google</div>
-          <div class="vid-channel-row">
-            <span class="vid-channel-name">Jijo Joseph</span>
-            <span class="vid-yt-badge">YouTube</span>
-          </div>
-        </div>
-      </a>
-        </div>
-      </div>
-      <div class="card" id="m10-quiz-card" style="border:1.5px solid #bfdbfe;background:#f8fbff;margin-top:8px"><h3>🧠 Module Quiz</h3><p style="font-size:0.87rem;color:var(--muted);margin-bottom:18px">Answer all 5 questions, then click <strong>"See My Score"</strong>. Score <strong>40%+</strong> to unlock the next module.</p><div id="m10-quiz"></div><div style="margin-top:16px;display:flex;align-items:center;gap:12px;flex-wrap:wrap"><button class="btn btn-primary" onclick="scoreQuiz('m10')">📊 See My Score</button><button class="btn btn-outline" onclick="retryQuiz('m10')">🔄 New Questions</button></div><div id="m10-score" style="display:none;margin-top:16px;padding:16px 20px;border-radius:12px;font-size:0.9rem;line-height:1.6"></div><div id="m10-unlock-banner" class="quiz-unlocked-banner">🔓 Module 11: E-Commerce SEO is now unlocked!</div></div>
-      <div class="nav-buttons"><button class="btn btn-outline" onclick="showSection('m9')">← Previous</button><button class="btn btn-primary btn-next-locked" onclick="navClick('m11')">Next Module →</button></div>
-      <p class="quiz-pass-hint">💡 Score 40%+ on the quiz above to unlock the next module</p>
-    </div>
-
-    <!-- MODULE 11 -->
-    <div class="section" id="m11">
-      <div class="module-header"><div class="module-icon">🛒</div><div><h2>Module 11: E-Commerce SEO</h2><p>Optimise online stores to rank product pages and increase revenue.</p></div></div>
-      <div class="module-progress"><span style="color:var(--muted);font-weight:500;">Your progress</span><div class="module-progress-bar"><div class="module-progress-fill"></div></div><span class="module-progress-label">0 / 0 opened</span></div>
-      <div class="expand-all-row"><button class="btn-xs" onclick="expandAll('m11')">↓ Expand All</button><button class="btn-xs" onclick="collapseAll('m11')">↑ Collapse All</button></div>
-      <div class="card"><h3>🛒 Product &amp; Category Page Optimisation</h3><ul class="checklist"><li><span class="check-icon">✓</span> Unique product descriptions — never copy from manufacturer</li><li><span class="check-icon">✓</span> Product Schema with price, availability, and rating markup</li><li><span class="check-icon">✓</span> Category pages: 150–300 word unique intro with target keyword</li><li><span class="check-icon">✓</span> Breadcrumb navigation with BreadcrumbList schema</li><li><span class="check-icon">✓</span> Faceted navigation: noindex filter URLs or use canonical tags</li></ul></div>
-
-      <!-- JIJO JOSEPH VIDEOS -->
-      <div class="module-videos">
-        <div class="module-videos-title">🎬 Watch: Jijo Joseph's SEO Tutorials</div>
-        <div class="module-videos-sub">Topic-wise video lessons by Jijo Joseph (Malayalam/English) — click to watch on YouTube</div>
-        <div class="vid-grid">
-      <a class="vid-item" href="https://www.youtube.com/watch?v=HxOQ5nyAXn8" target="_blank" rel="noopener">
-        <div class="vid-thumb">
-          <img src="https://img.youtube.com/vi/HxOQ5nyAXn8/hqdefault.jpg" alt="Optimize E-Commerce Product Title Tags for SEO" loading="lazy">
-          <div class="vid-play"><svg width="18" height="18" viewBox="0 0 24 24" fill="white"><polygon points="5,3 19,12 5,21"/></svg></div>
-        </div>
-        <div class="vid-info">
-          <div class="vid-topic">Product Page Titles</div>
-          <div class="vid-title-text">Optimize E-Commerce Product Title Tags for SEO</div>
-          <div class="vid-channel-row">
-            <span class="vid-channel-name">Jijo Joseph</span>
-            <span class="vid-yt-badge">YouTube</span>
-          </div>
-        </div>
-      </a>
-      <a class="vid-item" href="https://www.youtube.com/watch?v=tPpiK4-iFm8" target="_blank" rel="noopener">
-        <div class="vid-thumb">
-          <img src="https://img.youtube.com/vi/tPpiK4-iFm8/hqdefault.jpg" alt="Writing SEO Meta Descriptions for E-Commerce" loading="lazy">
-          <div class="vid-play"><svg width="18" height="18" viewBox="0 0 24 24" fill="white"><polygon points="5,3 19,12 5,21"/></svg></div>
-        </div>
-        <div class="vid-info">
-          <div class="vid-topic">Product Descriptions</div>
-          <div class="vid-title-text">Writing SEO Meta Descriptions for E-Commerce</div>
-          <div class="vid-channel-row">
-            <span class="vid-channel-name">Jijo Joseph</span>
-            <span class="vid-yt-badge">YouTube</span>
-          </div>
-        </div>
-      </a>
-      <a class="vid-item" href="https://www.youtube.com/watch?v=dJR1UkrX3HE" target="_blank" rel="noopener">
-        <div class="vid-thumb">
-          <img src="https://img.youtube.com/vi/dJR1UkrX3HE/hqdefault.jpg" alt="Product & Review Schema Markup — E-Commerce SEO" loading="lazy">
-          <div class="vid-play"><svg width="18" height="18" viewBox="0 0 24 24" fill="white"><polygon points="5,3 19,12 5,21"/></svg></div>
-        </div>
-        <div class="vid-info">
-          <div class="vid-topic">Product Schema</div>
-          <div class="vid-title-text">Product & Review Schema Markup — E-Commerce SEO</div>
-          <div class="vid-channel-row">
-            <span class="vid-channel-name">Jijo Joseph</span>
-            <span class="vid-yt-badge">YouTube</span>
-          </div>
-        </div>
-      </a>
-      <a class="vid-item" href="https://www.youtube.com/watch?v=2t2wWReeb7s" target="_blank" rel="noopener">
-        <div class="vid-thumb">
-          <img src="https://img.youtube.com/vi/2t2wWReeb7s/hqdefault.jpg" alt="SEO-Friendly URL Structure for E-Commerce Sites" loading="lazy">
-          <div class="vid-play"><svg width="18" height="18" viewBox="0 0 24 24" fill="white"><polygon points="5,3 19,12 5,21"/></svg></div>
-        </div>
-        <div class="vid-info">
-          <div class="vid-topic">E-Commerce URLs</div>
-          <div class="vid-title-text">SEO-Friendly URL Structure for E-Commerce Sites</div>
-          <div class="vid-channel-row">
-            <span class="vid-channel-name">Jijo Joseph</span>
-            <span class="vid-yt-badge">YouTube</span>
-          </div>
-        </div>
-      </a>
-        </div>
-      </div>
-      <div class="card" id="m11-quiz-card" style="border:1.5px solid #bfdbfe;background:#f8fbff;margin-top:8px"><h3>🧠 Module Quiz</h3><p style="font-size:0.87rem;color:var(--muted);margin-bottom:18px">Answer all 5 questions, then click <strong>"See My Score"</strong>. Score <strong>40%+</strong> to unlock the next module.</p><div id="m11-quiz"></div><div style="margin-top:16px;display:flex;align-items:center;gap:12px;flex-wrap:wrap"><button class="btn btn-primary" onclick="scoreQuiz('m11')">📊 See My Score</button><button class="btn btn-outline" onclick="retryQuiz('m11')">🔄 New Questions</button></div><div id="m11-score" style="display:none;margin-top:16px;padding:16px 20px;border-radius:12px;font-size:0.9rem;line-height:1.6"></div><div id="m11-unlock-banner" class="quiz-unlocked-banner">🔓 Module 12: AI &amp; Future SEO is now unlocked!</div></div>
-      <div class="nav-buttons"><button class="btn btn-outline" onclick="showSection('m10')">← Previous</button><button class="btn btn-primary btn-next-locked" onclick="navClick('m12')">Next Module →</button></div>
-      <p class="quiz-pass-hint">💡 Score 40%+ on the quiz above to unlock the next module</p>
-    </div>
-
-    <!-- MODULE 12 -->
-    <div class="section" id="m12">
-      <div class="module-header"><div class="module-icon">🤖</div><div><h2>Module 12: AI &amp; The Future of SEO</h2><p>Understand how AI is transforming search and adapt your strategy.</p></div></div>
-      <div class="module-progress"><span style="color:var(--muted);font-weight:500;">Your progress</span><div class="module-progress-bar"><div class="module-progress-fill"></div></div><span class="module-progress-label">0 / 0 opened</span></div>
-      <div class="expand-all-row"><button class="btn-xs" onclick="expandAll('m12')">↓ Expand All</button><button class="btn-xs" onclick="collapseAll('m12')">↑ Collapse All</button></div>
-      <div class="card"><h3>🤖 AI Overviews &amp; The Future</h3><div class="grid-2"><div class="tool-card"><div class="tool-icon">✨</div><div class="tool-name">AI Overviews</div><div class="tool-desc">Google's AI generates summaries at the top of results, reducing clicks for informational queries. Target commercial &amp; transactional keywords to protect traffic.</div></div><div class="tool-card"><div class="tool-icon">🛡️</div><div class="tool-name">How to Survive</div><div class="tool-desc">Optimize for being cited IN AI Overviews. Build brand authority. Focus on bottom-of-funnel content where users must click to convert.</div></div></div></div>
-      <div class="card"><h3>🔮 Future SEO Trends</h3><div class="grid-3"><div class="tool-card"><div class="tool-icon">🖼️</div><div class="tool-name">Visual Search</div><div class="tool-desc">Google Lens searches growing 50% YoY. Optimize images with descriptive filenames, alt text, and Image Schema.</div></div><div class="tool-card"><div class="tool-icon">🎬</div><div class="tool-name">Video SEO</div><div class="tool-desc">YouTube is the 2nd largest search engine. Video results appear in Google SERPs. Add transcripts, chapters, and video schema.</div></div><div class="tool-card"><div class="tool-icon">🧩</div><div class="tool-name">Entity SEO</div><div class="tool-desc">Google understands entities (people, brands, places). Build entity associations through structured data and authoritative mentions.</div></div></div></div>
-
-      <!-- JIJO JOSEPH VIDEOS -->
-      <div class="module-videos">
-        <div class="module-videos-title">🎬 Watch: Jijo Joseph's SEO Tutorials</div>
-        <div class="module-videos-sub">Topic-wise video lessons by Jijo Joseph (Malayalam/English) — click to watch on YouTube</div>
-        <div class="vid-grid">
-      <a class="vid-item" href="https://www.youtube.com/watch?v=hP1-ciBlFnc" target="_blank" rel="noopener">
-        <div class="vid-thumb">
-          <img src="https://img.youtube.com/vi/hP1-ciBlFnc/hqdefault.jpg" alt="The Future of SEO — AI, Voice Search & Trends 2024" loading="lazy">
-          <div class="vid-play"><svg width="18" height="18" viewBox="0 0 24 24" fill="white"><polygon points="5,3 19,12 5,21"/></svg></div>
-        </div>
-        <div class="vid-info">
-          <div class="vid-topic">Future of SEO</div>
-          <div class="vid-title-text">The Future of SEO — AI, Voice Search & Trends 2024</div>
-          <div class="vid-channel-row">
-            <span class="vid-channel-name">Jijo Joseph</span>
-            <span class="vid-yt-badge">YouTube</span>
-          </div>
-        </div>
-      </a>
-      <a class="vid-item" href="https://www.youtube.com/watch?v=ZNAaoQ2-pXk" target="_blank" rel="noopener">
-        <div class="vid-thumb">
-          <img src="https://img.youtube.com/vi/ZNAaoQ2-pXk/hqdefault.jpg" alt="Using AI Tools for Advanced SEO Keyword Research" loading="lazy">
-          <div class="vid-play"><svg width="18" height="18" viewBox="0 0 24 24" fill="white"><polygon points="5,3 19,12 5,21"/></svg></div>
-        </div>
-        <div class="vid-info">
-          <div class="vid-topic">AI Keyword Research</div>
-          <div class="vid-title-text">Using AI Tools for Advanced SEO Keyword Research</div>
-          <div class="vid-channel-row">
-            <span class="vid-channel-name">Jijo Joseph</span>
-            <span class="vid-yt-badge">YouTube</span>
-          </div>
-        </div>
-      </a>
-      <a class="vid-item" href="https://www.youtube.com/watch?v=SLNG24w5Ux8" target="_blank" rel="noopener">
-        <div class="vid-thumb">
-          <img src="https://img.youtube.com/vi/SLNG24w5Ux8/hqdefault.jpg" alt="AI-Generated Content & SEO — What Google Thinks" loading="lazy">
-          <div class="vid-play"><svg width="18" height="18" viewBox="0 0 24 24" fill="white"><polygon points="5,3 19,12 5,21"/></svg></div>
-        </div>
-        <div class="vid-info">
-          <div class="vid-topic">AI Content & SEO</div>
-          <div class="vid-title-text">AI-Generated Content & SEO — What Google Thinks</div>
-          <div class="vid-channel-row">
-            <span class="vid-channel-name">Jijo Joseph</span>
-            <span class="vid-yt-badge">YouTube</span>
-          </div>
-        </div>
-      </a>
-      <a class="vid-item" href="https://www.youtube.com/watch?v=qOMMUsf-DK4" target="_blank" rel="noopener">
-        <div class="vid-thumb">
-          <img src="https://img.youtube.com/vi/qOMMUsf-DK4/hqdefault.jpg" alt="Google Search Console in the Age of AI Overviews" loading="lazy">
-          <div class="vid-play"><svg width="18" height="18" viewBox="0 0 24 24" fill="white"><polygon points="5,3 19,12 5,21"/></svg></div>
-        </div>
-        <div class="vid-info">
-          <div class="vid-topic">Analytics for AI SEO</div>
-          <div class="vid-title-text">Google Search Console in the Age of AI Overviews</div>
-          <div class="vid-channel-row">
-            <span class="vid-channel-name">Jijo Joseph</span>
-            <span class="vid-yt-badge">YouTube</span>
-          </div>
-        </div>
-      </a>
-        </div>
-      </div>
-      <div class="card" id="m12-quiz-card" style="border:1.5px solid #bfdbfe;background:#f8fbff;margin-top:8px"><h3>🧠 Module Quiz</h3><p style="font-size:0.87rem;color:var(--muted);margin-bottom:18px">Answer all 5 questions, then click <strong>"See My Score"</strong>. Score <strong>40%+</strong> to complete the course!</p><div id="m12-quiz"></div><div style="margin-top:16px;display:flex;align-items:center;gap:12px;flex-wrap:wrap"><button class="btn btn-primary" onclick="scoreQuiz('m12')">📊 See My Score</button><button class="btn btn-outline" onclick="retryQuiz('m12')">🔄 New Questions</button></div><div id="m12-score" style="display:none;margin-top:16px;padding:16px 20px;border-radius:12px;font-size:0.9rem;line-height:1.6"></div><div id="m12-unlock-banner" class="quiz-unlocked-banner">🎉 Course complete! Proceed to Assignments.</div></div>
-      <div class="nav-buttons"><button class="btn btn-outline" onclick="showSection('m11')">← Previous</button><button class="btn btn-primary btn-next-locked" onclick="navClick('assignments')">View Assignments →</button></div>
-      <p class="quiz-pass-hint">💡 Score 40%+ on the quiz above to unlock Assignments</p>
-    </div>
-
-    <!-- ASSIGNMENTS -->
-    <div class="section" id="assignments">
-      <div class="module-header"><div class="module-icon">📝</div><div><h2>Assignments &amp; Projects</h2><p>Apply what you've learned with these hands-on projects.</p></div></div>
-      <div class="assignment-card"><h3>🔧 Project 1: Optimise a Basic HTML Website</h3><p>Create a 3-page HTML website for an imaginary business. Apply complete on-page SEO: title tags, meta descriptions, headings, alt text, internal links, canonical tags, and sitemap.xml.</p><div class="tag-list"><span class="a-tag">HTML</span><span class="a-tag">On-Page SEO</span><span class="a-tag">Schema</span><span class="a-tag">Modules 3+4</span></div></div>
-      <div class="assignment-card"><h3>🔍 Project 2: Full SEO Audit</h3><p>Choose a real website. Use Screaming Frog, PageSpeed Insights, and Ahrefs/SEMrush trial to produce a complete audit report with recommendations.</p><div class="tag-list"><span class="a-tag">Screaming Frog</span><span class="a-tag">GSC</span><span class="a-tag">Module 9</span></div></div>
-      <div class="assignment-card"><h3>✍️ Project 3: Write 3 SEO Blog Posts</h3><p>Plan and write 3 blog posts targeting specific keywords. Each must include keyword research evidence, proper heading structure, meta tags, internal links, images with alt text.</p><div class="tag-list"><span class="a-tag">Content Strategy</span><span class="a-tag">Keyword Research</span><span class="a-tag">Modules 2+8</span></div></div>
-      <div class="assignment-card"><h3>📍 Project 4: Local SEO Strategy</h3><p>Create a complete local SEO strategy for a real or imaginary local business — GBP setup guide, NAP audit, review generation plan, local keywords, and LocalBusiness schema.</p><div class="tag-list"><span class="a-tag">Local SEO</span><span class="a-tag">Google Business</span><span class="a-tag">Module 7</span></div></div>
-      <div class="success-box"><div class="box-title">🎓 Congratulations!</div>You've completed the Hirush Global SEO Training Program! Submit all 4 projects to your mentor for evaluation.</div>
-      <div class="nav-buttons"><button class="btn btn-outline" onclick="showSection('m12')">← Previous</button><button class="btn btn-primary" onclick="showSection('home')">🏠 Back to Dashboard</button></div>
-    </div>
-
-  </div><!-- /content -->
+</div>
+<div class="card">
+<h3>⚙️ How Search Engines Work</h3>
+<div class="grid-3">
+<div class="tool-card"><div class="tool-icon">🕷️</div><div class="tool-name">Step 1: Crawling</div><div class="tool-desc">Google sends robots (Googlebots) that visit websites and follow links — discovering new content 24/7.</div></div>
+<div class="tool-card"><div class="tool-icon">📚</div><div class="tool-name">Step 2: Indexing</div><div class="tool-desc">Google reads and stores page content in its massive database. Pages not indexed cannot appear in search results.</div></div>
+<div class="tool-card"><div class="tool-icon">🏆</div><div class="tool-name">Step 3: Ranking</div><div class="tool-desc">When someone searches, Google compares indexed pages and ranks them using 200+ signals. SEO improves those signals.</div></div>
+</div>
+</div>
+<div class="card">
+<h3>⚖️ White Hat vs Black Hat SEO</h3>
+<div class="do-dont">
+<div class="do-box">
+<div class="dod-label">✅ White Hat (Do This)</div>
+<ul>
+<li>Write genuinely helpful content</li>
+<li>Earn links naturally</li>
+<li>Make your site fast and easy to use</li>
+<li>Use keywords naturally</li>
+</ul>
+</div>
+<div class="dont-box">
+<div class="dod-label">❌ Black Hat (Never Do This)</div>
+<ul>
+<li>Stuff keywords unnaturally</li>
+<li>Buy backlinks from spammy sites</li>
+<li>Hide text to trick Google</li>
+<li>Copy content from other sites</li>
+</ul>
+</div>
+</div>
+</div>
+<div class="card">
+<h3>🔑 Search Intent — Why People Search</h3>
+<div class="grid-2">
+<div class="tool-card"><div class="tool-icon">🔍</div><div class="tool-name">Informational — "I want to learn"</div><div class="tool-desc">Example: "how does SEO work" → Write a blog post or guide.</div></div>
+<div class="tool-card"><div class="tool-icon">🧭</div><div class="tool-name">Navigational — "I want to go somewhere"</div><div class="tool-desc">Example: "Facebook login" → Your homepage or login page.</div></div>
+<div class="tool-card"><div class="tool-icon">💰</div><div class="tool-name">Commercial — "I want to compare"</div><div class="tool-desc">Example: "best SEO tools 2024" → Comparison or review article.</div></div>
+<div class="tool-card"><div class="tool-icon">🛒</div><div class="tool-name">Transactional — "I want to buy"</div><div class="tool-desc">Example: "buy Ahrefs plan" → Product or pricing page.</div></div>
+</div>
+</div>
+<!-- MODULE 1 QUIZ -->
+<!-- JIJO JOSEPH VIDEOS -->
+<div class="module-videos">
+<div class="module-videos-title">🎬 Watch: Jijo Joseph's SEO Tutorials</div>
+<div class="module-videos-sub">Topic-wise video lessons by Jijo Joseph (Malayalam/English) — click to watch on YouTube</div>
+<div class="vid-grid">
+<a class="vid-item" href="https://www.youtube.com/watch?v=hP1-ciBlFnc" rel="noopener" target="_blank">
+<div class="vid-thumb">
+<img alt="What is SEO? — Complete Explanation in Malayalam" loading="lazy" src="https://img.youtube.com/vi/hP1-ciBlFnc/hqdefault.jpg"/>
+<div class="vid-play"><svg fill="white" height="18" viewbox="0 0 24 24" width="18"><polygon points="5,3 19,12 5,21"></polygon></svg></div>
+</div>
+<div class="vid-info">
+<div class="vid-topic">What is SEO?</div>
+<div class="vid-title-text">What is SEO? — Complete Explanation in Malayalam</div>
+<div class="vid-channel-row">
+<span class="vid-channel-name">Jijo Joseph</span>
+<span class="vid-yt-badge">YouTube</span>
+</div>
+</div>
+</a>
+<a class="vid-item" href="https://www.youtube.com/watch?v=ipme9vPoKiE" rel="noopener" target="_blank">
+<div class="vid-thumb">
+<img alt="How Do Search Engines Work? Crawling, Indexing &amp; Ranking" loading="lazy" src="https://img.youtube.com/vi/ipme9vPoKiE/hqdefault.jpg"/>
+<div class="vid-play"><svg fill="white" height="18" viewbox="0 0 24 24" width="18"><polygon points="5,3 19,12 5,21"></polygon></svg></div>
+</div>
+<div class="vid-info">
+<div class="vid-topic">How Search Engines Work</div>
+<div class="vid-title-text">How Do Search Engines Work? Crawling, Indexing &amp; Ranking</div>
+<div class="vid-channel-row">
+<span class="vid-channel-name">Jijo Joseph</span>
+<span class="vid-yt-badge">YouTube</span>
+</div>
+</div>
+</a>
+<a class="vid-item" href="https://www.youtube.com/watch?v=_UnpN3t4aQY" rel="noopener" target="_blank">
+<div class="vid-thumb">
+<img alt="Organic Search vs Paid Search — Key Differences" loading="lazy" src="https://img.youtube.com/vi/_UnpN3t4aQY/hqdefault.jpg"/>
+<div class="vid-play"><svg fill="white" height="18" viewbox="0 0 24 24" width="18"><polygon points="5,3 19,12 5,21"></polygon></svg></div>
+</div>
+<div class="vid-info">
+<div class="vid-topic">Organic vs Paid Search</div>
+<div class="vid-title-text">Organic Search vs Paid Search — Key Differences</div>
+<div class="vid-channel-row">
+<span class="vid-channel-name">Jijo Joseph</span>
+<span class="vid-yt-badge">YouTube</span>
+</div>
+</div>
+</a>
+<a class="vid-item" href="https://www.youtube.com/watch?v=SLNG24w5Ux8" rel="noopener" target="_blank">
+<div class="vid-thumb">
+<img alt="On-Page SEO Complete Guide in Malayalam" loading="lazy" src="https://img.youtube.com/vi/SLNG24w5Ux8/hqdefault.jpg"/>
+<div class="vid-play"><svg fill="white" height="18" viewbox="0 0 24 24" width="18"><polygon points="5,3 19,12 5,21"></polygon></svg></div>
+</div>
+<div class="vid-info">
+<div class="vid-topic">On-Page SEO Intro</div>
+<div class="vid-title-text">On-Page SEO Complete Guide in Malayalam</div>
+<div class="vid-channel-row">
+<span class="vid-channel-name">Jijo Joseph</span>
+<span class="vid-yt-badge">YouTube</span>
+</div>
+</div>
+</a>
+</div>
+</div>
+<div class="card" id="m1-quiz-card" style="border:1.5px solid #bfdbfe;background:#f8fbff;margin-top:8px">
+<h3>🧠 Module Quiz — Test Your Knowledge</h3>
+<p style="font-size:0.87rem;color:var(--muted);margin-bottom:18px">Answer all 5 questions, then click <strong>"See My Score"</strong>. Score <strong>40%+</strong> (2/5 correct) to unlock the next module.</p>
+<div id="m1-quiz"></div>
+<div style="margin-top:16px;display:flex;align-items:center;gap:12px;flex-wrap:wrap">
+<button class="btn btn-primary" onclick="scoreQuiz('m1')">📊 See My Score</button>
+<button class="btn btn-outline" onclick="retryQuiz('m1')">🔄 New Questions</button>
+</div>
+<div id="m1-score" style="display:none;margin-top:16px;padding:16px 20px;border-radius:12px;font-size:0.9rem;line-height:1.6"></div>
+<div class="quiz-unlocked-banner" id="m1-unlock-banner">🔓 Module 2: Keyword Research is now unlocked in the sidebar!</div>
+</div>
+<div class="nav-buttons">
+<button class="btn btn-primary btn-next-locked" onclick="navClick('m2')">Next Module →</button>
+</div>
+<p class="quiz-pass-hint">💡 Score 40%+ on the quiz above to unlock the next module</p>
+</div>
+<!-- MODULE 2 -->
+<div class="section" id="m2">
+<div class="module-header">
+<div class="module-icon">🔍</div>
+<div>
+<h2>Module 2: Keyword Research</h2>
+<p>Master the art of finding the right keywords — the foundation of every successful SEO strategy.</p>
+</div>
+</div>
+<div class="module-progress">
+<span style="color:var(--muted);font-weight:500;">Your progress</span>
+<div class="module-progress-bar"><div class="module-progress-fill"></div></div>
+<span class="module-progress-label">0 / 0 opened</span>
+</div>
+<div class="expand-all-row">
+<button class="btn-xs" onclick="expandAll('m2')">↓ Expand All</button>
+<button class="btn-xs" onclick="collapseAll('m2')">↑ Collapse All</button>
+</div>
+<div class="card">
+<h3>🔑 What are Keywords? <span class="beginner-badge">🌱 Start here</span></h3>
+<div class="plain-english"><div class="pe-icon">💬</div><div class="pe-body"><strong>In plain English</strong>Keywords are simply the words people type into Google. Figure out what words they type — and use those words on your pages.</div></div>
+<div class="analogy-box"><div class="analogy-label">🎯 Simple analogy</div>Keywords are like radio frequencies. If you're broadcasting on the wrong frequency, nobody tunes in — even if your content is excellent.</div>
+</div>
+<div class="card">
+<h3>📊 Types of Keywords</h3>
+<table class="kw-table">
+<tr><th>Type</th><th>Example</th><th>Difficulty</th><th>Best For</th></tr>
+<tr><td><strong>Short-tail</strong> (1-2 words)</td><td>"shoes"</td><td>🔴 Extremely Hard</td><td>Big brands only</td></tr>
+<tr><td><strong>Mid-tail</strong> (2-3 words)</td><td>"running shoes for men"</td><td>🟡 Moderate</td><td>Growing sites</td></tr>
+<tr><td><strong>Long-tail ⭐</strong> (4+ words)</td><td>"best running shoes for flat feet under 3000"</td><td>🟢 Easy</td><td>New sites — start here!</td></tr>
+<tr><td><strong>Local keywords</strong></td><td>"shoe shop near me"</td><td>🟢 Easy</td><td>Local businesses</td></tr>
+</table>
+</div>
+<div class="card">
+<h3>💡 Key Keyword Metrics</h3>
+<div class="grid-3">
+<div class="tool-card"><div class="tool-icon">📈</div><div class="tool-name">Search Volume</div><div class="tool-desc">How many people search per month. For beginners: target 100–1,000/month.</div></div>
+<div class="tool-card"><div class="tool-icon">🏋️</div><div class="tool-name">Keyword Difficulty (KD)</div><div class="tool-desc">How hard to reach page 1 (0–100). For beginners: target KD under 20.</div></div>
+<div class="tool-card"><div class="tool-icon">💰</div><div class="tool-name">CPC (Cost Per Click)</div><div class="tool-desc">What advertisers pay per click. High CPC = high commercial value even for organic SEO.</div></div>
+</div>
+</div>
+<!-- MODULE 2 QUIZ -->
+<!-- JIJO JOSEPH VIDEOS -->
+<div class="module-videos">
+<div class="module-videos-title">🎬 Watch: Jijo Joseph's SEO Tutorials</div>
+<div class="module-videos-sub">Topic-wise video lessons by Jijo Joseph (Malayalam/English) — click to watch on YouTube</div>
+<div class="vid-grid">
+<a class="vid-item" href="https://www.youtube.com/watch?v=Yg2TSfwcSU0" rel="noopener" target="_blank">
+<div class="vid-thumb">
+<img alt="Long Tail vs Short Tail Keywords — Which to Target?" loading="lazy" src="https://img.youtube.com/vi/Yg2TSfwcSU0/hqdefault.jpg"/>
+<div class="vid-play"><svg fill="white" height="18" viewbox="0 0 24 24" width="18"><polygon points="5,3 19,12 5,21"></polygon></svg></div>
+</div>
+<div class="vid-info">
+<div class="vid-topic">Long Tail vs Short Tail</div>
+<div class="vid-title-text">Long Tail vs Short Tail Keywords — Which to Target?</div>
+<div class="vid-channel-row">
+<span class="vid-channel-name">Jijo Joseph</span>
+<span class="vid-yt-badge">YouTube</span>
+</div>
+</div>
+</a>
+<a class="vid-item" href="https://www.youtube.com/watch?v=z9IrwMsBbSw" rel="noopener" target="_blank">
+<div class="vid-thumb">
+<img alt="How to Do Keyword Research — Step by Step in Malayalam" loading="lazy" src="https://img.youtube.com/vi/z9IrwMsBbSw/hqdefault.jpg"/>
+<div class="vid-play"><svg fill="white" height="18" viewbox="0 0 24 24" width="18"><polygon points="5,3 19,12 5,21"></polygon></svg></div>
+</div>
+<div class="vid-info">
+<div class="vid-topic">Keyword Research</div>
+<div class="vid-title-text">How to Do Keyword Research — Step by Step in Malayalam</div>
+<div class="vid-channel-row">
+<span class="vid-channel-name">Jijo Joseph</span>
+<span class="vid-yt-badge">YouTube</span>
+</div>
+</div>
+</a>
+<a class="vid-item" href="https://www.youtube.com/watch?v=Ugh7xg_nkco" rel="noopener" target="_blank">
+<div class="vid-thumb">
+<img alt="Google Keyword Planner Tutorial for Beginners" loading="lazy" src="https://img.youtube.com/vi/Ugh7xg_nkco/hqdefault.jpg"/>
+<div class="vid-play"><svg fill="white" height="18" viewbox="0 0 24 24" width="18"><polygon points="5,3 19,12 5,21"></polygon></svg></div>
+</div>
+<div class="vid-info">
+<div class="vid-topic">Google Keyword Planner</div>
+<div class="vid-title-text">Google Keyword Planner Tutorial for Beginners</div>
+<div class="vid-channel-row">
+<span class="vid-channel-name">Jijo Joseph</span>
+<span class="vid-yt-badge">YouTube</span>
+</div>
+</div>
+</a>
+<a class="vid-item" href="https://www.youtube.com/watch?v=ZNAaoQ2-pXk" rel="noopener" target="_blank">
+<div class="vid-thumb">
+<img alt="Advanced Keyword Research Strategies — Malayalam" loading="lazy" src="https://img.youtube.com/vi/ZNAaoQ2-pXk/hqdefault.jpg"/>
+<div class="vid-play"><svg fill="white" height="18" viewbox="0 0 24 24" width="18"><polygon points="5,3 19,12 5,21"></polygon></svg></div>
+</div>
+<div class="vid-info">
+<div class="vid-topic">Advanced Keyword Research</div>
+<div class="vid-title-text">Advanced Keyword Research Strategies — Malayalam</div>
+<div class="vid-channel-row">
+<span class="vid-channel-name">Jijo Joseph</span>
+<span class="vid-yt-badge">YouTube</span>
+</div>
+</div>
+</a>
+</div>
+</div>
+<div class="card" id="m2-quiz-card" style="border:1.5px solid #bfdbfe;background:#f8fbff;margin-top:8px">
+<h3>🧠 Module Quiz — Test Your Knowledge</h3>
+<p style="font-size:0.87rem;color:var(--muted);margin-bottom:18px">Answer all 5 questions, then click <strong>"See My Score"</strong>. Score <strong>40%+</strong> to unlock the next module.</p>
+<div id="m2-quiz"></div>
+<div style="margin-top:16px;display:flex;align-items:center;gap:12px;flex-wrap:wrap">
+<button class="btn btn-primary" onclick="scoreQuiz('m2')">📊 See My Score</button>
+<button class="btn btn-outline" onclick="retryQuiz('m2')">🔄 New Questions</button>
+</div>
+<div id="m2-score" style="display:none;margin-top:16px;padding:16px 20px;border-radius:12px;font-size:0.9rem;line-height:1.6"></div>
+<div class="quiz-unlocked-banner" id="m2-unlock-banner">🔓 Module 3: On-Page SEO is now unlocked!</div>
+</div>
+<div class="nav-buttons">
+<button class="btn btn-outline" onclick="showSection('m1')">← Previous</button>
+<button class="btn btn-primary btn-next-locked" onclick="navClick('m3')">Next Module →</button>
+</div>
+<p class="quiz-pass-hint">💡 Score 40%+ on the quiz above to unlock the next module</p>
+</div>
+<!-- MODULE 3 -->
+<div class="section" id="m3">
+<div class="module-header">
+<div class="module-icon">🛠</div>
+<div><h2>Module 3: On-Page SEO</h2><p>Optimize every element on your web pages to maximize rankings and click-through rates.</p></div>
+</div>
+<div class="module-progress"><span style="color:var(--muted);font-weight:500;">Your progress</span><div class="module-progress-bar"><div class="module-progress-fill"></div></div><span class="module-progress-label">0 / 0 opened</span></div>
+<div class="expand-all-row"><button class="btn-xs" onclick="expandAll('m3')">↓ Expand All</button><button class="btn-xs" onclick="collapseAll('m3')">↑ Collapse All</button></div>
+<div class="card">
+<h3>📄 Title Tag &amp; Meta Description</h3>
+<ul class="checklist">
+<li><span class="check-icon">✓</span> Title: 50–60 characters, include primary keyword near start</li>
+<li><span class="check-icon">✓</span> Meta description: 150–160 characters with keyword + CTA</li>
+<li><span class="check-icon">✓</span> Unique title and meta for every page</li>
+</ul>
+</div>
+<div class="card">
+<h3>🔤 Heading Structure (H1 to H6)</h3>
+<div class="plain-english"><div class="pe-icon">💬</div><div class="pe-body"><strong>In plain English</strong>Headings are like chapter titles. H1 is the main title (one per page!), H2s are chapters, H3s are sub-sections.</div></div>
+<div class="warning-box"><div class="box-title">⚠️ Common Mistakes</div>❌ Multiple H1 tags   ❌ Skipping heading levels   ❌ No keywords in H1   ❌ Using headings just for styling</div>
+</div>
+<div class="card">
+<h3>🖼️ Image Optimization &amp; Internal Linking</h3>
+<ul class="checklist">
+<li><span class="check-icon">✓</span> Descriptive file names: keyword-research-tools.webp</li>
+<li><span class="check-icon">✓</span> Alt text on every image describing the image + keyword</li>
+<li><span class="check-icon">✓</span> Convert to WebP format for 30% smaller files</li>
+<li><span class="check-icon">✓</span> Use keyword-rich anchor text for internal links — not "click here"</li>
+<li><span class="check-icon">✓</span> At least 3–5 internal links per page to relevant content</li>
+</ul>
+</div>
+<!-- MODULE 3 QUIZ -->
+<!-- JIJO JOSEPH VIDEOS -->
+<div class="module-videos">
+<div class="module-videos-title">🎬 Watch: Jijo Joseph's SEO Tutorials</div>
+<div class="module-videos-sub">Topic-wise video lessons by Jijo Joseph (Malayalam/English) — click to watch on YouTube</div>
+<div class="vid-grid">
+<a class="vid-item" href="https://www.youtube.com/watch?v=HxOQ5nyAXn8" rel="noopener" target="_blank">
+<div class="vid-thumb">
+<img alt="What is a Meta Title Tag? — SEO Tutorial in Malayalam" loading="lazy" src="https://img.youtube.com/vi/HxOQ5nyAXn8/hqdefault.jpg"/>
+<div class="vid-play"><svg fill="white" height="18" viewbox="0 0 24 24" width="18"><polygon points="5,3 19,12 5,21"></polygon></svg></div>
+</div>
+<div class="vid-info">
+<div class="vid-topic">Meta Title Tags</div>
+<div class="vid-title-text">What is a Meta Title Tag? — SEO Tutorial in Malayalam</div>
+<div class="vid-channel-row">
+<span class="vid-channel-name">Jijo Joseph</span>
+<span class="vid-yt-badge">YouTube</span>
+</div>
+</div>
+</a>
+<a class="vid-item" href="https://www.youtube.com/watch?v=tPpiK4-iFm8" rel="noopener" target="_blank">
+<div class="vid-thumb">
+<img alt="Importance of Meta Description in SEO" loading="lazy" src="https://img.youtube.com/vi/tPpiK4-iFm8/hqdefault.jpg"/>
+<div class="vid-play"><svg fill="white" height="18" viewbox="0 0 24 24" width="18"><polygon points="5,3 19,12 5,21"></polygon></svg></div>
+</div>
+<div class="vid-info">
+<div class="vid-topic">Meta Description</div>
+<div class="vid-title-text">Importance of Meta Description in SEO</div>
+<div class="vid-channel-row">
+<span class="vid-channel-name">Jijo Joseph</span>
+<span class="vid-yt-badge">YouTube</span>
+</div>
+</div>
+</a>
+<a class="vid-item" href="https://www.youtube.com/watch?v=2t2wWReeb7s" rel="noopener" target="_blank">
+<div class="vid-thumb">
+<img alt="How to Create SEO-Friendly URLs — Malayalam Guide" loading="lazy" src="https://img.youtube.com/vi/2t2wWReeb7s/hqdefault.jpg"/>
+<div class="vid-play"><svg fill="white" height="18" viewbox="0 0 24 24" width="18"><polygon points="5,3 19,12 5,21"></polygon></svg></div>
+</div>
+<div class="vid-info">
+<div class="vid-topic">SEO-Friendly URLs</div>
+<div class="vid-title-text">How to Create SEO-Friendly URLs — Malayalam Guide</div>
+<div class="vid-channel-row">
+<span class="vid-channel-name">Jijo Joseph</span>
+<span class="vid-yt-badge">YouTube</span>
+</div>
+</div>
+</a>
+<a class="vid-item" href="https://www.youtube.com/watch?v=IlhZIsGP6pA" rel="noopener" target="_blank">
+<div class="vid-thumb">
+<img alt="Internal Linking in SEO — Complete Tutorial" loading="lazy" src="https://img.youtube.com/vi/IlhZIsGP6pA/hqdefault.jpg"/>
+<div class="vid-play"><svg fill="white" height="18" viewbox="0 0 24 24" width="18"><polygon points="5,3 19,12 5,21"></polygon></svg></div>
+</div>
+<div class="vid-info">
+<div class="vid-topic">Internal Linking</div>
+<div class="vid-title-text">Internal Linking in SEO — Complete Tutorial</div>
+<div class="vid-channel-row">
+<span class="vid-channel-name">Jijo Joseph</span>
+<span class="vid-yt-badge">YouTube</span>
+</div>
+</div>
+</a>
+</div>
+</div>
+<div class="card" id="m3-quiz-card" style="border:1.5px solid #bfdbfe;background:#f8fbff;margin-top:8px">
+<h3>🧠 Module Quiz</h3>
+<p style="font-size:0.87rem;color:var(--muted);margin-bottom:18px">Answer all 5 questions, then click <strong>"See My Score"</strong>. Score <strong>40%+</strong> to unlock the next module.</p>
+<div id="m3-quiz"></div>
+<div style="margin-top:16px;display:flex;align-items:center;gap:12px;flex-wrap:wrap">
+<button class="btn btn-primary" onclick="scoreQuiz('m3')">📊 See My Score</button>
+<button class="btn btn-outline" onclick="retryQuiz('m3')">🔄 New Questions</button>
+</div>
+<div id="m3-score" style="display:none;margin-top:16px;padding:16px 20px;border-radius:12px;font-size:0.9rem;line-height:1.6"></div>
+<div class="quiz-unlocked-banner" id="m3-unlock-banner">🔓 Module 4: Technical SEO is now unlocked!</div>
+</div>
+<div class="nav-buttons">
+<button class="btn btn-outline" onclick="showSection('m2')">← Previous</button>
+<button class="btn btn-primary btn-next-locked" onclick="navClick('m4')">Next Module →</button>
+</div>
+<p class="quiz-pass-hint">💡 Score 40%+ on the quiz above to unlock the next module</p>
+</div>
+<!-- MODULE 4 -->
+<div class="section" id="m4">
+<div class="module-header"><div class="module-icon">⚙️</div><div><h2>Module 4: Technical SEO</h2><p>Ensure Google can find, crawl, and index your website efficiently.</p></div></div>
+<div class="module-progress"><span style="color:var(--muted);font-weight:500;">Your progress</span><div class="module-progress-bar"><div class="module-progress-fill"></div></div><span class="module-progress-label">0 / 0 opened</span></div>
+<div class="expand-all-row"><button class="btn-xs" onclick="expandAll('m4')">↓ Expand All</button><button class="btn-xs" onclick="collapseAll('m4')">↑ Collapse All</button></div>
+<div class="card">
+<h3>⚡ Core Web Vitals</h3>
+<table class="kw-table">
+<tr><th>Metric</th><th>Measures</th><th>Good Score</th></tr>
+<tr><td><strong>LCP</strong></td><td>How fast main content loads</td><td>Under 2.5s</td></tr>
+<tr><td><strong>INP</strong></td><td>How fast page responds to clicks</td><td>Under 200ms</td></tr>
+<tr><td><strong>CLS</strong></td><td>How much content jumps while loading</td><td>Under 0.1</td></tr>
+</table>
+</div>
+<div class="card">
+<h3>🗺️ Sitemaps, robots.txt &amp; Redirects</h3>
+<ul class="checklist">
+<li><span class="check-icon">✓</span> XML sitemap submitted to Google Search Console</li>
+<li><span class="check-icon">✓</span> robots.txt correctly blocks admin/cart pages only</li>
+<li><span class="check-icon">✓</span> 301 redirects for all permanently moved pages</li>
+<li><span class="check-icon">✓</span> HTTPS enabled with no mixed-content warnings</li>
+<li><span class="check-icon">✓</span> No redirect chains (A → B → C → use A → C directly)</li>
+</ul>
+</div>
+<!-- MODULE 4 QUIZ -->
+<!-- JIJO JOSEPH VIDEOS -->
+<div class="module-videos">
+<div class="module-videos-title">🎬 Watch: Jijo Joseph's SEO Tutorials</div>
+<div class="module-videos-sub">Topic-wise video lessons by Jijo Joseph (Malayalam/English) — click to watch on YouTube</div>
+<div class="vid-grid">
+<a class="vid-item" href="https://www.youtube.com/watch?v=yELynih_f7A" rel="noopener" target="_blank">
+<div class="vid-thumb">
+<img alt="The Role of Sitemaps in SEO — Malayalam Tutorial" loading="lazy" src="https://img.youtube.com/vi/yELynih_f7A/hqdefault.jpg"/>
+<div class="vid-play"><svg fill="white" height="18" viewbox="0 0 24 24" width="18"><polygon points="5,3 19,12 5,21"></polygon></svg></div>
+</div>
+<div class="vid-info">
+<div class="vid-topic">Sitemaps in SEO</div>
+<div class="vid-title-text">The Role of Sitemaps in SEO — Malayalam Tutorial</div>
+<div class="vid-channel-row">
+<span class="vid-channel-name">Jijo Joseph</span>
+<span class="vid-yt-badge">YouTube</span>
+</div>
+</div>
+</a>
+<a class="vid-item" href="https://www.youtube.com/watch?v=d14p43IX5Zc" rel="noopener" target="_blank">
+<div class="vid-thumb">
+<img alt="Ultimate Guide to Robots.txt in SEO" loading="lazy" src="https://img.youtube.com/vi/d14p43IX5Zc/hqdefault.jpg"/>
+<div class="vid-play"><svg fill="white" height="18" viewbox="0 0 24 24" width="18"><polygon points="5,3 19,12 5,21"></polygon></svg></div>
+</div>
+<div class="vid-info">
+<div class="vid-topic">Robots.txt</div>
+<div class="vid-title-text">Ultimate Guide to Robots.txt in SEO</div>
+<div class="vid-channel-row">
+<span class="vid-channel-name">Jijo Joseph</span>
+<span class="vid-yt-badge">YouTube</span>
+</div>
+</div>
+</a>
+<a class="vid-item" href="https://www.youtube.com/watch?v=UY-AmnJ3yUg" rel="noopener" target="_blank">
+<div class="vid-thumb">
+<img alt="An Overview of Canonical Tags — SEO Explained" loading="lazy" src="https://img.youtube.com/vi/UY-AmnJ3yUg/hqdefault.jpg"/>
+<div class="vid-play"><svg fill="white" height="18" viewbox="0 0 24 24" width="18"><polygon points="5,3 19,12 5,21"></polygon></svg></div>
+</div>
+<div class="vid-info">
+<div class="vid-topic">Canonical Tags</div>
+<div class="vid-title-text">An Overview of Canonical Tags — SEO Explained</div>
+<div class="vid-channel-row">
+<span class="vid-channel-name">Jijo Joseph</span>
+<span class="vid-yt-badge">YouTube</span>
+</div>
+</div>
+</a>
+<a class="vid-item" href="https://www.youtube.com/watch?v=dJR1UkrX3HE" rel="noopener" target="_blank">
+<div class="vid-thumb">
+<img alt="What is Schema Markup? — SEO Tutorial in Malayalam" loading="lazy" src="https://img.youtube.com/vi/dJR1UkrX3HE/hqdefault.jpg"/>
+<div class="vid-play"><svg fill="white" height="18" viewbox="0 0 24 24" width="18"><polygon points="5,3 19,12 5,21"></polygon></svg></div>
+</div>
+<div class="vid-info">
+<div class="vid-topic">Schema Markup</div>
+<div class="vid-title-text">What is Schema Markup? — SEO Tutorial in Malayalam</div>
+<div class="vid-channel-row">
+<span class="vid-channel-name">Jijo Joseph</span>
+<span class="vid-yt-badge">YouTube</span>
+</div>
+</div>
+</a>
+</div>
+</div>
+<div class="card" id="m4-quiz-card" style="border:1.5px solid #bfdbfe;background:#f8fbff;margin-top:8px">
+<h3>🧠 Module Quiz</h3>
+<p style="font-size:0.87rem;color:var(--muted);margin-bottom:18px">Answer all 5 questions, then click <strong>"See My Score"</strong>. Score <strong>40%+</strong> to unlock the next module.</p>
+<div id="m4-quiz"></div>
+<div style="margin-top:16px;display:flex;align-items:center;gap:12px;flex-wrap:wrap">
+<button class="btn btn-primary" onclick="scoreQuiz('m4')">📊 See My Score</button>
+<button class="btn btn-outline" onclick="retryQuiz('m4')">🔄 New Questions</button>
+</div>
+<div id="m4-score" style="display:none;margin-top:16px;padding:16px 20px;border-radius:12px;font-size:0.9rem;line-height:1.6"></div>
+<div class="quiz-unlocked-banner" id="m4-unlock-banner">🔓 Module 5: GSC &amp; Analytics is now unlocked!</div>
+</div>
+<div class="nav-buttons">
+<button class="btn btn-outline" onclick="showSection('m3')">← Previous</button>
+<button class="btn btn-primary btn-next-locked" onclick="navClick('m5')">Next Module →</button>
+</div>
+<p class="quiz-pass-hint">💡 Score 40%+ on the quiz above to unlock the next module</p>
+</div>
+<!-- MODULES 5-12: abbreviated cards + quiz pattern (same structure) -->
+<!-- MODULE 5 -->
+<div class="section" id="m5">
+<div class="module-header"><div class="module-icon">📈</div><div><h2>Module 5: Google Search Console &amp; Analytics</h2><p>Master the essential Google tools that show how your site performs in search.</p></div></div>
+<div class="module-progress"><span style="color:var(--muted);font-weight:500;">Your progress</span><div class="module-progress-bar"><div class="module-progress-fill"></div></div><span class="module-progress-label">0 / 0 opened</span></div>
+<div class="expand-all-row"><button class="btn-xs" onclick="expandAll('m5')">↓ Expand All</button><button class="btn-xs" onclick="collapseAll('m5')">↑ Collapse All</button></div>
+<div class="card"><h3>🔍 Google Search Console Key Reports</h3><div class="grid-3"><div class="tool-card"><div class="tool-icon">📊</div><div class="tool-name">Performance</div><div class="tool-desc">Every keyword you rank for — impressions, clicks, CTR, average position.</div></div><div class="tool-card"><div class="tool-icon">📋</div><div class="tool-name">Index Coverage</div><div class="tool-desc">Which pages are indexed, which are excluded, and why.</div></div><div class="tool-card"><div class="tool-icon">🔗</div><div class="tool-name">Links Report</div><div class="tool-desc">Top linked pages, external domains linking to you, anchor texts.</div></div></div></div>
+<div class="card"><h3>📊 Key GSC Metrics</h3><table class="kw-table"><tr><th>Metric</th><th>What it Means</th><th>Action if Low</th></tr><tr><td>Impressions</td><td>How many times your page appeared in results</td><td>Expand keyword targeting</td></tr><tr><td>Clicks</td><td>How many times users actually clicked</td><td>Improve title tags and meta descriptions</td></tr><tr><td>CTR</td><td>Clicks ÷ Impressions × 100</td><td>Rewrite titles/meta for better appeal</td></tr><tr><td>Avg. Position</td><td>Average ranking position for queries</td><td>Improve on-page SEO and build links</td></tr></table></div>
+<!-- JIJO JOSEPH VIDEOS -->
+<div class="module-videos">
+<div class="module-videos-title">🎬 Watch: Jijo Joseph's SEO Tutorials</div>
+<div class="module-videos-sub">Topic-wise video lessons by Jijo Joseph (Malayalam/English) — click to watch on YouTube</div>
+<div class="vid-grid">
+<a class="vid-item" href="https://www.youtube.com/watch?v=qOMMUsf-DK4" rel="noopener" target="_blank">
+<div class="vid-thumb">
+<img alt="Google Search Console Full Tutorial in Malayalam" loading="lazy" src="https://img.youtube.com/vi/qOMMUsf-DK4/hqdefault.jpg"/>
+<div class="vid-play"><svg fill="white" height="18" viewbox="0 0 24 24" width="18"><polygon points="5,3 19,12 5,21"></polygon></svg></div>
+</div>
+<div class="vid-info">
+<div class="vid-topic">Google Search Console</div>
+<div class="vid-title-text">Google Search Console Full Tutorial in Malayalam</div>
+<div class="vid-channel-row">
+<span class="vid-channel-name">Jijo Joseph</span>
+<span class="vid-yt-badge">YouTube</span>
+</div>
+</div>
+</a>
+<a class="vid-item" href="https://www.youtube.com/watch?v=IKLrfFSbaU4" rel="noopener" target="_blank">
+<div class="vid-thumb">
+<img alt="Google Tag Manager Tutorial — SEO Setup Guide" loading="lazy" src="https://img.youtube.com/vi/IKLrfFSbaU4/hqdefault.jpg"/>
+<div class="vid-play"><svg fill="white" height="18" viewbox="0 0 24 24" width="18"><polygon points="5,3 19,12 5,21"></polygon></svg></div>
+</div>
+<div class="vid-info">
+<div class="vid-topic">Google Tag Manager</div>
+<div class="vid-title-text">Google Tag Manager Tutorial — SEO Setup Guide</div>
+<div class="vid-channel-row">
+<span class="vid-channel-name">Jijo Joseph</span>
+<span class="vid-yt-badge">YouTube</span>
+</div>
+</div>
+</a>
+<a class="vid-item" href="https://www.youtube.com/watch?v=FafE2O62ApE" rel="noopener" target="_blank">
+<div class="vid-thumb">
+<img alt="What is SEO Difficulty? — Keyword Research in Malayalam" loading="lazy" src="https://img.youtube.com/vi/FafE2O62ApE/hqdefault.jpg"/>
+<div class="vid-play"><svg fill="white" height="18" viewbox="0 0 24 24" width="18"><polygon points="5,3 19,12 5,21"></polygon></svg></div>
+</div>
+<div class="vid-info">
+<div class="vid-topic">SEO Difficulty</div>
+<div class="vid-title-text">What is SEO Difficulty? — Keyword Research in Malayalam</div>
+<div class="vid-channel-row">
+<span class="vid-channel-name">Jijo Joseph</span>
+<span class="vid-yt-badge">YouTube</span>
+</div>
+</div>
+</a>
+<a class="vid-item" href="https://www.youtube.com/watch?v=P5UKWoDHC_0" rel="noopener" target="_blank">
+<div class="vid-thumb">
+<img alt="OGP / Open Graph Protocol — Everything You Need to Know" loading="lazy" src="https://img.youtube.com/vi/P5UKWoDHC_0/hqdefault.jpg"/>
+<div class="vid-play"><svg fill="white" height="18" viewbox="0 0 24 24" width="18"><polygon points="5,3 19,12 5,21"></polygon></svg></div>
+</div>
+<div class="vid-info">
+<div class="vid-topic">Open Graph Protocol</div>
+<div class="vid-title-text">OGP / Open Graph Protocol — Everything You Need to Know</div>
+<div class="vid-channel-row">
+<span class="vid-channel-name">Jijo Joseph</span>
+<span class="vid-yt-badge">YouTube</span>
+</div>
+</div>
+</a>
+</div>
+</div>
+<div class="card" id="m5-quiz-card" style="border:1.5px solid #bfdbfe;background:#f8fbff;margin-top:8px"><h3>🧠 Module Quiz</h3><p style="font-size:0.87rem;color:var(--muted);margin-bottom:18px">Answer all 5 questions, then click <strong>"See My Score"</strong>. Score <strong>40%+</strong> to unlock the next module.</p><div id="m5-quiz"></div><div style="margin-top:16px;display:flex;align-items:center;gap:12px;flex-wrap:wrap"><button class="btn btn-primary" onclick="scoreQuiz('m5')">📊 See My Score</button><button class="btn btn-outline" onclick="retryQuiz('m5')">🔄 New Questions</button></div><div id="m5-score" style="display:none;margin-top:16px;padding:16px 20px;border-radius:12px;font-size:0.9rem;line-height:1.6"></div><div class="quiz-unlocked-banner" id="m5-unlock-banner">🔓 Module 6: Off-Page SEO is now unlocked!</div></div>
+<div class="nav-buttons"><button class="btn btn-outline" onclick="showSection('m4')">← Previous</button><button class="btn btn-primary btn-next-locked" onclick="navClick('m6')">Next Module →</button></div>
+<p class="quiz-pass-hint">💡 Score 40%+ on the quiz above to unlock the next module</p>
+</div>
+<!-- MODULE 6 -->
+<div class="section" id="m6">
+<div class="module-header"><div class="module-icon">🌍</div><div><h2>Module 6: Off-Page SEO &amp; Link Building</h2><p>Build authority through backlinks, digital PR, and brand mentions.</p></div></div>
+<div class="module-progress"><span style="color:var(--muted);font-weight:500;">Your progress</span><div class="module-progress-bar"><div class="module-progress-fill"></div></div><span class="module-progress-label">0 / 0 opened</span></div>
+<div class="expand-all-row"><button class="btn-xs" onclick="expandAll('m6')">↓ Expand All</button><button class="btn-xs" onclick="collapseAll('m6')">↑ Collapse All</button></div>
+<div class="card"><h3>🔗 What is a Backlink?</h3><div class="plain-english"><div class="pe-icon">💬</div><div class="pe-body"><strong>In plain English</strong>A backlink is a link from another website to yours. It acts as a "vote of trust." More high-quality votes = Google ranks you higher.</div></div><table class="kw-table"><tr><th>Type</th><th>Passes Authority?</th><th>When to Use</th></tr><tr><td>Dofollow</td><td>Yes ✅</td><td>Default — all natural links</td></tr><tr><td>Nofollow</td><td>No</td><td>Paid links, user-generated content</td></tr><tr><td>Sponsored</td><td>No</td><td>Paid ads/sponsored content</td></tr></table></div>
+<div class="card"><h3>🏗️ White Hat Link Building Strategies</h3><div class="grid-2"><div class="tool-card"><div class="tool-icon">🪄</div><div class="tool-name">Guest Posting</div><div class="tool-desc">Write for another website in your niche. Include 1–2 natural links back to your site.</div></div><div class="tool-card"><div class="tool-icon">🔗</div><div class="tool-name">Broken Link Building</div><div class="tool-desc">Find broken links on other sites, create replacement content, email the webmaster.</div></div><div class="tool-card"><div class="tool-icon">📰</div><div class="tool-name">Digital PR</div><div class="tool-desc">Create newsworthy studies/surveys. Pitch to journalists for high-authority links.</div></div><div class="tool-card"><div class="tool-icon">🏆</div><div class="tool-name">Skyscraper Technique</div><div class="tool-desc">Find top-linked content → create something better → email sites that linked to original.</div></div></div></div>
+<!-- JIJO JOSEPH VIDEOS -->
+<div class="module-videos">
+<div class="module-videos-title">🎬 Watch: Jijo Joseph's SEO Tutorials</div>
+<div class="module-videos-sub">Topic-wise video lessons by Jijo Joseph (Malayalam/English) — click to watch on YouTube</div>
+<div class="vid-grid">
+<a class="vid-item" href="https://www.youtube.com/watch?v=z9IrwMsBbSw" rel="noopener" target="_blank">
+<div class="vid-thumb">
+<img alt="How to Find Keywords for Link Building — Malayalam" loading="lazy" src="https://img.youtube.com/vi/z9IrwMsBbSw/hqdefault.jpg"/>
+<div class="vid-play"><svg fill="white" height="18" viewbox="0 0 24 24" width="18"><polygon points="5,3 19,12 5,21"></polygon></svg></div>
+</div>
+<div class="vid-info">
+<div class="vid-topic">Keyword Strategy for Links</div>
+<div class="vid-title-text">How to Find Keywords for Link Building — Malayalam</div>
+<div class="vid-channel-row">
+<span class="vid-channel-name">Jijo Joseph</span>
+<span class="vid-yt-badge">YouTube</span>
+</div>
+</div>
+</a>
+<a class="vid-item" href="https://www.youtube.com/watch?v=ZNAaoQ2-pXk" rel="noopener" target="_blank">
+<div class="vid-thumb">
+<img alt="Advanced SEO Strategies for Off-Page Optimization" loading="lazy" src="https://img.youtube.com/vi/ZNAaoQ2-pXk/hqdefault.jpg"/>
+<div class="vid-play"><svg fill="white" height="18" viewbox="0 0 24 24" width="18"><polygon points="5,3 19,12 5,21"></polygon></svg></div>
+</div>
+<div class="vid-info">
+<div class="vid-topic">Advanced SEO Strategies</div>
+<div class="vid-title-text">Advanced SEO Strategies for Off-Page Optimization</div>
+<div class="vid-channel-row">
+<span class="vid-channel-name">Jijo Joseph</span>
+<span class="vid-yt-badge">YouTube</span>
+</div>
+</div>
+</a>
+<a class="vid-item" href="https://www.youtube.com/watch?v=hP1-ciBlFnc" rel="noopener" target="_blank">
+<div class="vid-thumb">
+<img alt="SEO Authority Building — Backlinks &amp; Domain Authority" loading="lazy" src="https://img.youtube.com/vi/hP1-ciBlFnc/hqdefault.jpg"/>
+<div class="vid-play"><svg fill="white" height="18" viewbox="0 0 24 24" width="18"><polygon points="5,3 19,12 5,21"></polygon></svg></div>
+</div>
+<div class="vid-info">
+<div class="vid-topic">Domain Authority Basics</div>
+<div class="vid-title-text">SEO Authority Building — Backlinks &amp; Domain Authority</div>
+<div class="vid-channel-row">
+<span class="vid-channel-name">Jijo Joseph</span>
+<span class="vid-yt-badge">YouTube</span>
+</div>
+</div>
+</a>
+<a class="vid-item" href="https://www.youtube.com/watch?v=SLNG24w5Ux8" rel="noopener" target="_blank">
+<div class="vid-thumb">
+<img alt="Off-Page SEO Complete Overview — What You Need to Know" loading="lazy" src="https://img.youtube.com/vi/SLNG24w5Ux8/hqdefault.jpg"/>
+<div class="vid-play"><svg fill="white" height="18" viewbox="0 0 24 24" width="18"><polygon points="5,3 19,12 5,21"></polygon></svg></div>
+</div>
+<div class="vid-info">
+<div class="vid-topic">Off-Page SEO Overview</div>
+<div class="vid-title-text">Off-Page SEO Complete Overview — What You Need to Know</div>
+<div class="vid-channel-row">
+<span class="vid-channel-name">Jijo Joseph</span>
+<span class="vid-yt-badge">YouTube</span>
+</div>
+</div>
+</a>
+</div>
+</div>
+<div class="card" id="m6-quiz-card" style="border:1.5px solid #bfdbfe;background:#f8fbff;margin-top:8px"><h3>🧠 Module Quiz</h3><p style="font-size:0.87rem;color:var(--muted);margin-bottom:18px">Answer all 5 questions, then click <strong>"See My Score"</strong>. Score <strong>40%+</strong> to unlock the next module.</p><div id="m6-quiz"></div><div style="margin-top:16px;display:flex;align-items:center;gap:12px;flex-wrap:wrap"><button class="btn btn-primary" onclick="scoreQuiz('m6')">📊 See My Score</button><button class="btn btn-outline" onclick="retryQuiz('m6')">🔄 New Questions</button></div><div id="m6-score" style="display:none;margin-top:16px;padding:16px 20px;border-radius:12px;font-size:0.9rem;line-height:1.6"></div><div class="quiz-unlocked-banner" id="m6-unlock-banner">🔓 Module 7: Local SEO is now unlocked!</div></div>
+<div class="nav-buttons"><button class="btn btn-outline" onclick="showSection('m5')">← Previous</button><button class="btn btn-primary btn-next-locked" onclick="navClick('m7')">Next Module →</button></div>
+<p class="quiz-pass-hint">💡 Score 40%+ on the quiz above to unlock the next module</p>
+</div>
+<!-- MODULE 7 -->
+<div class="section" id="m7">
+<div class="module-header"><div class="module-icon">📍</div><div><h2>Module 7: Local SEO</h2><p>Dominate local search results and attract customers in your geographic area.</p></div></div>
+<div class="module-progress"><span style="color:var(--muted);font-weight:500;">Your progress</span><div class="module-progress-bar"><div class="module-progress-fill"></div></div><span class="module-progress-label">0 / 0 opened</span></div>
+<div class="expand-all-row"><button class="btn-xs" onclick="expandAll('m7')">↓ Expand All</button><button class="btn-xs" onclick="collapseAll('m7')">↑ Collapse All</button></div>
+<div class="card"><h3>🗺️ The Local Pack &amp; Google Business Profile</h3><div class="plain-english"><div class="pe-icon">💬</div><div class="pe-body"><strong>In plain English</strong>When someone searches "restaurant near me," Google shows a map with 3 businesses. This is the Local Pack. Getting into it is the #1 goal of Local SEO.</div></div><div class="grid-3"><div class="tool-card"><div class="tool-icon">📍</div><div class="tool-name">Proximity</div><div class="tool-desc">How close to the searcher.</div></div><div class="tool-card"><div class="tool-icon">🎯</div><div class="tool-name">Relevance</div><div class="tool-desc">Does your GBP match the search?</div></div><div class="tool-card"><div class="tool-icon">🏆</div><div class="tool-name">Prominence</div><div class="tool-desc">How well-known online (reviews, links, citations).</div></div></div></div>
+<div class="card"><h3>📋 NAP Consistency &amp; Reviews</h3><div class="warning-box"><div class="box-title">⚠️ NAP must be IDENTICAL everywhere</div>Name, Address, Phone — inconsistencies across Google, Facebook, Justdial etc. confuse Google and hurt local rankings.</div><div class="tip-box"><div class="box-title">💡 Review Response Template</div>"Thank you [Name] for your feedback. We're sorry your experience didn't meet our standards. Please contact us at [phone/email] and we'll resolve this immediately."</div></div>
+<!-- JIJO JOSEPH VIDEOS -->
+<div class="module-videos">
+<div class="module-videos-title">🎬 Watch: Jijo Joseph's SEO Tutorials</div>
+<div class="module-videos-sub">Topic-wise video lessons by Jijo Joseph (Malayalam/English) — click to watch on YouTube</div>
+<div class="vid-grid">
+<a class="vid-item" href="https://www.youtube.com/watch?v=hP1-ciBlFnc" rel="noopener" target="_blank">
+<div class="vid-thumb">
+<img alt="Local SEO Fundamentals — Google Business Profile" loading="lazy" src="https://img.youtube.com/vi/hP1-ciBlFnc/hqdefault.jpg"/>
+<div class="vid-play"><svg fill="white" height="18" viewbox="0 0 24 24" width="18"><polygon points="5,3 19,12 5,21"></polygon></svg></div>
+</div>
+<div class="vid-info">
+<div class="vid-topic">Local SEO Basics</div>
+<div class="vid-title-text">Local SEO Fundamentals — Google Business Profile</div>
+<div class="vid-channel-row">
+<span class="vid-channel-name">Jijo Joseph</span>
+<span class="vid-yt-badge">YouTube</span>
+</div>
+</div>
+</a>
+<a class="vid-item" href="https://www.youtube.com/watch?v=ipme9vPoKiE" rel="noopener" target="_blank">
+<div class="vid-thumb">
+<img alt="How Local Search Works — Proximity, Relevance &amp; Prominence" loading="lazy" src="https://img.youtube.com/vi/ipme9vPoKiE/hqdefault.jpg"/>
+<div class="vid-play"><svg fill="white" height="18" viewbox="0 0 24 24" width="18"><polygon points="5,3 19,12 5,21"></polygon></svg></div>
+</div>
+<div class="vid-info">
+<div class="vid-topic">Local Search Signals</div>
+<div class="vid-title-text">How Local Search Works — Proximity, Relevance &amp; Prominence</div>
+<div class="vid-channel-row">
+<span class="vid-channel-name">Jijo Joseph</span>
+<span class="vid-yt-badge">YouTube</span>
+</div>
+</div>
+</a>
+<a class="vid-item" href="https://www.youtube.com/watch?v=Ugh7xg_nkco" rel="noopener" target="_blank">
+<div class="vid-thumb">
+<img alt="Local SEO Keyword Research with Google Planner" loading="lazy" src="https://img.youtube.com/vi/Ugh7xg_nkco/hqdefault.jpg"/>
+<div class="vid-play"><svg fill="white" height="18" viewbox="0 0 24 24" width="18"><polygon points="5,3 19,12 5,21"></polygon></svg></div>
+</div>
+<div class="vid-info">
+<div class="vid-topic">Local Keyword Research</div>
+<div class="vid-title-text">Local SEO Keyword Research with Google Planner</div>
+<div class="vid-channel-row">
+<span class="vid-channel-name">Jijo Joseph</span>
+<span class="vid-yt-badge">YouTube</span>
+</div>
+</div>
+</a>
+<a class="vid-item" href="https://www.youtube.com/watch?v=z9IrwMsBbSw" rel="noopener" target="_blank">
+<div class="vid-thumb">
+<img alt="NAP Consistency &amp; Local Citations — SEO Guide" loading="lazy" src="https://img.youtube.com/vi/z9IrwMsBbSw/hqdefault.jpg"/>
+<div class="vid-play"><svg fill="white" height="18" viewbox="0 0 24 24" width="18"><polygon points="5,3 19,12 5,21"></polygon></svg></div>
+</div>
+<div class="vid-info">
+<div class="vid-topic">NAP &amp; Citations</div>
+<div class="vid-title-text">NAP Consistency &amp; Local Citations — SEO Guide</div>
+<div class="vid-channel-row">
+<span class="vid-channel-name">Jijo Joseph</span>
+<span class="vid-yt-badge">YouTube</span>
+</div>
+</div>
+</a>
+</div>
+</div>
+<div class="card" id="m7-quiz-card" style="border:1.5px solid #bfdbfe;background:#f8fbff;margin-top:8px"><h3>🧠 Module Quiz</h3><p style="font-size:0.87rem;color:var(--muted);margin-bottom:18px">Answer all 5 questions, then click <strong>"See My Score"</strong>. Score <strong>40%+</strong> to unlock the next module.</p><div id="m7-quiz"></div><div style="margin-top:16px;display:flex;align-items:center;gap:12px;flex-wrap:wrap"><button class="btn btn-primary" onclick="scoreQuiz('m7')">📊 See My Score</button><button class="btn btn-outline" onclick="retryQuiz('m7')">🔄 New Questions</button></div><div id="m7-score" style="display:none;margin-top:16px;padding:16px 20px;border-radius:12px;font-size:0.9rem;line-height:1.6"></div><div class="quiz-unlocked-banner" id="m7-unlock-banner">🔓 Module 8: Content Strategy is now unlocked!</div></div>
+<div class="nav-buttons"><button class="btn btn-outline" onclick="showSection('m6')">← Previous</button><button class="btn btn-primary btn-next-locked" onclick="navClick('m8')">Next Module →</button></div>
+<p class="quiz-pass-hint">💡 Score 40%+ on the quiz above to unlock the next module</p>
+</div>
+<!-- MODULE 8 -->
+<div class="section" id="m8">
+<div class="module-header"><div class="module-icon">📚</div><div><h2>Module 8: Content Strategy &amp; Blogging</h2><p>Create content that ranks, engages readers, and drives business results.</p></div></div>
+<div class="module-progress"><span style="color:var(--muted);font-weight:500;">Your progress</span><div class="module-progress-bar"><div class="module-progress-fill"></div></div><span class="module-progress-label">0 / 0 opened</span></div>
+<div class="expand-all-row"><button class="btn-xs" onclick="expandAll('m8')">↓ Expand All</button><button class="btn-xs" onclick="collapseAll('m8')">↑ Collapse All</button></div>
+<div class="card"><h3>🏅 E-E-A-T: Google's Quality Standard</h3><table class="kw-table"><tr><th>Signal</th><th>Meaning</th><th>How to Show It</th></tr><tr><td>Experience (E)</td><td>First-hand knowledge</td><td>Personal stories, case studies, real examples</td></tr><tr><td>Expertise (E)</td><td>Deep knowledge</td><td>Author bio with credentials, authoritative sources</td></tr><tr><td>Authoritativeness (A)</td><td>Recognised authority</td><td>Backlinks from reputable sites, press coverage</td></tr><tr><td>Trustworthiness (T)</td><td>Accuracy &amp; transparency</td><td>Fact-checking, citations, HTTPS, contact info</td></tr></table></div>
+<div class="card"><h3>📝 Blog Post SEO Framework</h3><ul class="checklist"><li><span class="check-icon">✓</span> Research keyword + analyze top 5 SERP results for expected format</li><li><span class="check-icon">✓</span> Write a detailed outline with H2/H3 headings covering all sub-topics</li><li><span class="check-icon">✓</span> Include primary keyword in first 100 words</li><li><span class="check-icon">✓</span> Add FAQ section targeting People Also Ask questions</li><li><span class="check-icon">✓</span> Add Article schema, internal links, compressed images with alt text</li></ul></div>
+<!-- JIJO JOSEPH VIDEOS -->
+<div class="module-videos">
+<div class="module-videos-title">🎬 Watch: Jijo Joseph's SEO Tutorials</div>
+<div class="module-videos-sub">Topic-wise video lessons by Jijo Joseph (Malayalam/English) — click to watch on YouTube</div>
+<div class="vid-grid">
+<a class="vid-item" href="https://www.youtube.com/watch?v=ZNAaoQ2-pXk" rel="noopener" target="_blank">
+<div class="vid-thumb">
+<img alt="Content Strategy Keyword Research — Advanced Methods" loading="lazy" src="https://img.youtube.com/vi/ZNAaoQ2-pXk/hqdefault.jpg"/>
+<div class="vid-play"><svg fill="white" height="18" viewbox="0 0 24 24" width="18"><polygon points="5,3 19,12 5,21"></polygon></svg></div>
+</div>
+<div class="vid-info">
+<div class="vid-topic">Content Keyword Research</div>
+<div class="vid-title-text">Content Strategy Keyword Research — Advanced Methods</div>
+<div class="vid-channel-row">
+<span class="vid-channel-name">Jijo Joseph</span>
+<span class="vid-yt-badge">YouTube</span>
+</div>
+</div>
+</a>
+<a class="vid-item" href="https://www.youtube.com/watch?v=SLNG24w5Ux8" rel="noopener" target="_blank">
+<div class="vid-thumb">
+<img alt="On-Page Content SEO — Write Content That Ranks" loading="lazy" src="https://img.youtube.com/vi/SLNG24w5Ux8/hqdefault.jpg"/>
+<div class="vid-play"><svg fill="white" height="18" viewbox="0 0 24 24" width="18"><polygon points="5,3 19,12 5,21"></polygon></svg></div>
+</div>
+<div class="vid-info">
+<div class="vid-topic">Content SEO</div>
+<div class="vid-title-text">On-Page Content SEO — Write Content That Ranks</div>
+<div class="vid-channel-row">
+<span class="vid-channel-name">Jijo Joseph</span>
+<span class="vid-yt-badge">YouTube</span>
+</div>
+</div>
+</a>
+<a class="vid-item" href="https://www.youtube.com/watch?v=HxOQ5nyAXn8" rel="noopener" target="_blank">
+<div class="vid-thumb">
+<img alt="Optimize Your Blog Titles for SEO — Jijo Joseph" loading="lazy" src="https://img.youtube.com/vi/HxOQ5nyAXn8/hqdefault.jpg"/>
+<div class="vid-play"><svg fill="white" height="18" viewbox="0 0 24 24" width="18"><polygon points="5,3 19,12 5,21"></polygon></svg></div>
+</div>
+<div class="vid-info">
+<div class="vid-topic">Title Optimization</div>
+<div class="vid-title-text">Optimize Your Blog Titles for SEO — Jijo Joseph</div>
+<div class="vid-channel-row">
+<span class="vid-channel-name">Jijo Joseph</span>
+<span class="vid-yt-badge">YouTube</span>
+</div>
+</div>
+</a>
+<a class="vid-item" href="https://www.youtube.com/watch?v=IlhZIsGP6pA" rel="noopener" target="_blank">
+<div class="vid-thumb">
+<img alt="Internal Linking Strategy for Blog Content" loading="lazy" src="https://img.youtube.com/vi/IlhZIsGP6pA/hqdefault.jpg"/>
+<div class="vid-play"><svg fill="white" height="18" viewbox="0 0 24 24" width="18"><polygon points="5,3 19,12 5,21"></polygon></svg></div>
+</div>
+<div class="vid-info">
+<div class="vid-topic">Internal Links for Content</div>
+<div class="vid-title-text">Internal Linking Strategy for Blog Content</div>
+<div class="vid-channel-row">
+<span class="vid-channel-name">Jijo Joseph</span>
+<span class="vid-yt-badge">YouTube</span>
+</div>
+</div>
+</a>
+</div>
+</div>
+<div class="card" id="m8-quiz-card" style="border:1.5px solid #bfdbfe;background:#f8fbff;margin-top:8px"><h3>🧠 Module Quiz</h3><p style="font-size:0.87rem;color:var(--muted);margin-bottom:18px">Answer all 5 questions, then click <strong>"See My Score"</strong>. Score <strong>40%+</strong> to unlock the next module.</p><div id="m8-quiz"></div><div style="margin-top:16px;display:flex;align-items:center;gap:12px;flex-wrap:wrap"><button class="btn btn-primary" onclick="scoreQuiz('m8')">📊 See My Score</button><button class="btn btn-outline" onclick="retryQuiz('m8')">🔄 New Questions</button></div><div id="m8-score" style="display:none;margin-top:16px;padding:16px 20px;border-radius:12px;font-size:0.9rem;line-height:1.6"></div><div class="quiz-unlocked-banner" id="m8-unlock-banner">🔓 Module 9: SEO Tools &amp; Audits is now unlocked!</div></div>
+<div class="nav-buttons"><button class="btn btn-outline" onclick="showSection('m7')">← Previous</button><button class="btn btn-primary btn-next-locked" onclick="navClick('m9')">Next Module →</button></div>
+<p class="quiz-pass-hint">💡 Score 40%+ on the quiz above to unlock the next module</p>
+</div>
+<!-- MODULE 9 -->
+<div class="section" id="m9">
+<div class="module-header"><div class="module-icon">🔧</div><div><h2>Module 9: SEO Tools &amp; Site Audits</h2><p>Master the professional tools used by SEO experts worldwide.</p></div></div>
+<div class="module-progress"><span style="color:var(--muted);font-weight:500;">Your progress</span><div class="module-progress-bar"><div class="module-progress-fill"></div></div><span class="module-progress-label">0 / 0 opened</span></div>
+<div class="expand-all-row"><button class="btn-xs" onclick="expandAll('m9')">↓ Expand All</button><button class="btn-xs" onclick="collapseAll('m9')">↑ Collapse All</button></div>
+<div class="card"><h3>🛠 SEO Tools Quick Reference</h3><table class="kw-table"><tr><th>Tool</th><th>Best For</th><th>Price</th></tr><tr><td>Google Search Console</td><td>Performance, indexing, errors</td><td>Free</td></tr><tr><td>Google Analytics 4</td><td>User behaviour, traffic sources</td><td>Free</td></tr><tr><td>PageSpeed Insights</td><td>Core Web Vitals</td><td>Free</td></tr><tr><td>Screaming Frog</td><td>Technical crawl, broken links</td><td>Free/£259/yr</td></tr><tr><td>Ahrefs</td><td>Backlinks, keyword research</td><td>$99/mo</td></tr><tr><td>SEMrush</td><td>All-in-one SEO suite</td><td>$119/mo</td></tr><tr><td>Ubersuggest</td><td>Beginner keyword research</td><td>Free/$29/mo</td></tr></table></div>
+<div class="card"><h3>🔬 SEO Audit Checklist</h3><div class="grid-2"><div><h4 style="color:var(--blue);margin-bottom:8px">Technical</h4><ul class="checklist"><li><span class="check-icon">✓</span> HTTPS enabled</li><li><span class="check-icon">✓</span> robots.txt correctly configured</li><li><span class="check-icon">✓</span> XML sitemap submitted to GSC</li><li><span class="check-icon">✓</span> No redirect chains</li><li><span class="check-icon">✓</span> Core Web Vitals pass all thresholds</li><li><span class="check-icon">✓</span> Mobile-friendly test passes</li></ul></div><div><h4 style="color:var(--blue);margin-bottom:8px">On-Page &amp; Content</h4><ul class="checklist"><li><span class="check-icon">✓</span> Unique title tag per page (50–60 chars)</li><li><span class="check-icon">✓</span> Unique meta description (150–160 chars)</li><li><span class="check-icon">✓</span> One H1 per page with primary keyword</li><li><span class="check-icon">✓</span> All images have alt text</li><li><span class="check-icon">✓</span> No duplicate content issues</li><li><span class="check-icon">✓</span> Schema markup implemented</li></ul></div></div></div>
+<!-- JIJO JOSEPH VIDEOS -->
+<div class="module-videos">
+<div class="module-videos-title">🎬 Watch: Jijo Joseph's SEO Tutorials</div>
+<div class="module-videos-sub">Topic-wise video lessons by Jijo Joseph (Malayalam/English) — click to watch on YouTube</div>
+<div class="vid-grid">
+<a class="vid-item" href="https://www.youtube.com/watch?v=qOMMUsf-DK4" rel="noopener" target="_blank">
+<div class="vid-thumb">
+<img alt="Using Google Search Console for SEO Audits" loading="lazy" src="https://img.youtube.com/vi/qOMMUsf-DK4/hqdefault.jpg"/>
+<div class="vid-play"><svg fill="white" height="18" viewbox="0 0 24 24" width="18"><polygon points="5,3 19,12 5,21"></polygon></svg></div>
+</div>
+<div class="vid-info">
+<div class="vid-topic">GSC for Audits</div>
+<div class="vid-title-text">Using Google Search Console for SEO Audits</div>
+<div class="vid-channel-row">
+<span class="vid-channel-name">Jijo Joseph</span>
+<span class="vid-yt-badge">YouTube</span>
+</div>
+</div>
+</a>
+<a class="vid-item" href="https://www.youtube.com/watch?v=IKLrfFSbaU4" rel="noopener" target="_blank">
+<div class="vid-thumb">
+<img alt="Google Tag Manager — Complete SEO Setup" loading="lazy" src="https://img.youtube.com/vi/IKLrfFSbaU4/hqdefault.jpg"/>
+<div class="vid-play"><svg fill="white" height="18" viewbox="0 0 24 24" width="18"><polygon points="5,3 19,12 5,21"></polygon></svg></div>
+</div>
+<div class="vid-info">
+<div class="vid-topic">Tag Manager Setup</div>
+<div class="vid-title-text">Google Tag Manager — Complete SEO Setup</div>
+<div class="vid-channel-row">
+<span class="vid-channel-name">Jijo Joseph</span>
+<span class="vid-yt-badge">YouTube</span>
+</div>
+</div>
+</a>
+<a class="vid-item" href="https://www.youtube.com/watch?v=dJR1UkrX3HE" rel="noopener" target="_blank">
+<div class="vid-thumb">
+<img alt="Using Schema Markup — Technical SEO Tools Guide" loading="lazy" src="https://img.youtube.com/vi/dJR1UkrX3HE/hqdefault.jpg"/>
+<div class="vid-play"><svg fill="white" height="18" viewbox="0 0 24 24" width="18"><polygon points="5,3 19,12 5,21"></polygon></svg></div>
+</div>
+<div class="vid-info">
+<div class="vid-topic">Schema for Tools</div>
+<div class="vid-title-text">Using Schema Markup — Technical SEO Tools Guide</div>
+<div class="vid-channel-row">
+<span class="vid-channel-name">Jijo Joseph</span>
+<span class="vid-yt-badge">YouTube</span>
+</div>
+</div>
+</a>
+<a class="vid-item" href="https://www.youtube.com/watch?v=yELynih_f7A" rel="noopener" target="_blank">
+<div class="vid-thumb">
+<img alt="Sitemap Submission &amp; SEO Audit Checklist" loading="lazy" src="https://img.youtube.com/vi/yELynih_f7A/hqdefault.jpg"/>
+<div class="vid-play"><svg fill="white" height="18" viewbox="0 0 24 24" width="18"><polygon points="5,3 19,12 5,21"></polygon></svg></div>
+</div>
+<div class="vid-info">
+<div class="vid-topic">Sitemap &amp; Audit</div>
+<div class="vid-title-text">Sitemap Submission &amp; SEO Audit Checklist</div>
+<div class="vid-channel-row">
+<span class="vid-channel-name">Jijo Joseph</span>
+<span class="vid-yt-badge">YouTube</span>
+</div>
+</div>
+</a>
+</div>
+</div>
+<div class="card" id="m9-quiz-card" style="border:1.5px solid #bfdbfe;background:#f8fbff;margin-top:8px"><h3>🧠 Module Quiz</h3><p style="font-size:0.87rem;color:var(--muted);margin-bottom:18px">Answer all 5 questions, then click <strong>"See My Score"</strong>. Score <strong>40%+</strong> to unlock the next module.</p><div id="m9-quiz"></div><div style="margin-top:16px;display:flex;align-items:center;gap:12px;flex-wrap:wrap"><button class="btn btn-primary" onclick="scoreQuiz('m9')">📊 See My Score</button><button class="btn btn-outline" onclick="retryQuiz('m9')">🔄 New Questions</button></div><div id="m9-score" style="display:none;margin-top:16px;padding:16px 20px;border-radius:12px;font-size:0.9rem;line-height:1.6"></div><div class="quiz-unlocked-banner" id="m9-unlock-banner">🔓 Module 10: Advanced SEO is now unlocked!</div></div>
+<div class="nav-buttons"><button class="btn btn-outline" onclick="showSection('m8')">← Previous</button><button class="btn btn-primary btn-next-locked" onclick="navClick('m10')">Next Module →</button></div>
+<p class="quiz-pass-hint">💡 Score 40%+ on the quiz above to unlock the next module</p>
+</div>
+<!-- MODULE 10 -->
+<div class="section" id="m10">
+<div class="module-header"><div class="module-icon">🎓</div><div><h2>Module 10: Advanced SEO Techniques</h2><p>Level up with advanced strategies used by top SEO professionals.</p></div></div>
+<div class="module-progress"><span style="color:var(--muted);font-weight:500;">Your progress</span><div class="module-progress-bar"><div class="module-progress-fill"></div></div><span class="module-progress-label">0 / 0 opened</span></div>
+<div class="expand-all-row"><button class="btn-xs" onclick="expandAll('m10')">↓ Expand All</button><button class="btn-xs" onclick="collapseAll('m10')">↑ Collapse All</button></div>
+<div class="card"><h3>📋 Advanced Schema &amp; International SEO</h3><div class="grid-3"><div class="tool-card"><div class="tool-icon">❓</div><div class="tool-name">FAQ Schema</div><div class="tool-desc">Shows expandable Q&amp;A in search results — increases CTR by 20–30%.</div></div><div class="tool-card"><div class="tool-icon">⭐</div><div class="tool-name">Review Schema</div><div class="tool-desc">Shows star ratings under your title in search results.</div></div><div class="tool-card"><div class="tool-icon">🌐</div><div class="tool-name">hreflang Tags</div><div class="tool-desc">Tell Google which language/region version to show to which audience.</div></div></div></div>
+<div class="card"><h3>📜 Google Algorithm Updates</h3><table class="kw-table"><tr><th>Update</th><th>What It Did</th><th>SEO Lesson</th></tr><tr><td>🐼 Panda (2011)</td><td>Penalised thin/duplicate content</td><td>Quality over quantity</td></tr><tr><td>🐧 Penguin (2012)</td><td>Penalised spammy backlinks</td><td>Earn links naturally</td></tr><tr><td>🧠 RankBrain (2015)</td><td>AI to interpret complex queries</td><td>User experience matters</td></tr><tr><td>📝 Helpful Content (2022)</td><td>Rewarded people-first content</td><td>Write for people, not bots</td></tr></table></div>
+<!-- JIJO JOSEPH VIDEOS -->
+<div class="module-videos">
+<div class="module-videos-title">🎬 Watch: Jijo Joseph's SEO Tutorials</div>
+<div class="module-videos-sub">Topic-wise video lessons by Jijo Joseph (Malayalam/English) — click to watch on YouTube</div>
+<div class="vid-grid">
+<a class="vid-item" href="https://www.youtube.com/watch?v=UY-AmnJ3yUg" rel="noopener" target="_blank">
+<div class="vid-thumb">
+<img alt="Canonical Tags &amp; Duplicate Content — Advanced SEO" loading="lazy" src="https://img.youtube.com/vi/UY-AmnJ3yUg/hqdefault.jpg"/>
+<div class="vid-play"><svg fill="white" height="18" viewbox="0 0 24 24" width="18"><polygon points="5,3 19,12 5,21"></polygon></svg></div>
+</div>
+<div class="vid-info">
+<div class="vid-topic">Canonical &amp; Duplicate Content</div>
+<div class="vid-title-text">Canonical Tags &amp; Duplicate Content — Advanced SEO</div>
+<div class="vid-channel-row">
+<span class="vid-channel-name">Jijo Joseph</span>
+<span class="vid-yt-badge">YouTube</span>
+</div>
+</div>
+</a>
+<a class="vid-item" href="https://www.youtube.com/watch?v=d14p43IX5Zc" rel="noopener" target="_blank">
+<div class="vid-thumb">
+<img alt="Advanced Robots.txt Configurations for Technical SEO" loading="lazy" src="https://img.youtube.com/vi/d14p43IX5Zc/hqdefault.jpg"/>
+<div class="vid-play"><svg fill="white" height="18" viewbox="0 0 24 24" width="18"><polygon points="5,3 19,12 5,21"></polygon></svg></div>
+</div>
+<div class="vid-info">
+<div class="vid-topic">Robots.txt Advanced</div>
+<div class="vid-title-text">Advanced Robots.txt Configurations for Technical SEO</div>
+<div class="vid-channel-row">
+<span class="vid-channel-name">Jijo Joseph</span>
+<span class="vid-yt-badge">YouTube</span>
+</div>
+</div>
+</a>
+<a class="vid-item" href="https://www.youtube.com/watch?v=ZNAaoQ2-pXk" rel="noopener" target="_blank">
+<div class="vid-thumb">
+<img alt="Advanced Keyword Research for Competitive Niches" loading="lazy" src="https://img.youtube.com/vi/ZNAaoQ2-pXk/hqdefault.jpg"/>
+<div class="vid-play"><svg fill="white" height="18" viewbox="0 0 24 24" width="18"><polygon points="5,3 19,12 5,21"></polygon></svg></div>
+</div>
+<div class="vid-info">
+<div class="vid-topic">Advanced Keyword Tactics</div>
+<div class="vid-title-text">Advanced Keyword Research for Competitive Niches</div>
+<div class="vid-channel-row">
+<span class="vid-channel-name">Jijo Joseph</span>
+<span class="vid-yt-badge">YouTube</span>
+</div>
+</div>
+</a>
+<a class="vid-item" href="https://www.youtube.com/watch?v=dJR1UkrX3HE" rel="noopener" target="_blank">
+<div class="vid-thumb">
+<img alt="Advanced Schema Markup for Rich Results in Google" loading="lazy" src="https://img.youtube.com/vi/dJR1UkrX3HE/hqdefault.jpg"/>
+<div class="vid-play"><svg fill="white" height="18" viewbox="0 0 24 24" width="18"><polygon points="5,3 19,12 5,21"></polygon></svg></div>
+</div>
+<div class="vid-info">
+<div class="vid-topic">Structured Data Advanced</div>
+<div class="vid-title-text">Advanced Schema Markup for Rich Results in Google</div>
+<div class="vid-channel-row">
+<span class="vid-channel-name">Jijo Joseph</span>
+<span class="vid-yt-badge">YouTube</span>
+</div>
+</div>
+</a>
+</div>
+</div>
+<div class="card" id="m10-quiz-card" style="border:1.5px solid #bfdbfe;background:#f8fbff;margin-top:8px"><h3>🧠 Module Quiz</h3><p style="font-size:0.87rem;color:var(--muted);margin-bottom:18px">Answer all 5 questions, then click <strong>"See My Score"</strong>. Score <strong>40%+</strong> to unlock the next module.</p><div id="m10-quiz"></div><div style="margin-top:16px;display:flex;align-items:center;gap:12px;flex-wrap:wrap"><button class="btn btn-primary" onclick="scoreQuiz('m10')">📊 See My Score</button><button class="btn btn-outline" onclick="retryQuiz('m10')">🔄 New Questions</button></div><div id="m10-score" style="display:none;margin-top:16px;padding:16px 20px;border-radius:12px;font-size:0.9rem;line-height:1.6"></div><div class="quiz-unlocked-banner" id="m10-unlock-banner">🔓 Module 11: E-Commerce SEO is now unlocked!</div></div>
+<div class="nav-buttons"><button class="btn btn-outline" onclick="showSection('m9')">← Previous</button><button class="btn btn-primary btn-next-locked" onclick="navClick('m11')">Next Module →</button></div>
+<p class="quiz-pass-hint">💡 Score 40%+ on the quiz above to unlock the next module</p>
+</div>
+<!-- MODULE 11 -->
+<div class="section" id="m11">
+<div class="module-header"><div class="module-icon">🛒</div><div><h2>Module 11: E-Commerce SEO</h2><p>Optimise online stores to rank product pages and increase revenue.</p></div></div>
+<div class="module-progress"><span style="color:var(--muted);font-weight:500;">Your progress</span><div class="module-progress-bar"><div class="module-progress-fill"></div></div><span class="module-progress-label">0 / 0 opened</span></div>
+<div class="expand-all-row"><button class="btn-xs" onclick="expandAll('m11')">↓ Expand All</button><button class="btn-xs" onclick="collapseAll('m11')">↑ Collapse All</button></div>
+<div class="card"><h3>🛒 Product &amp; Category Page Optimisation</h3><ul class="checklist"><li><span class="check-icon">✓</span> Unique product descriptions — never copy from manufacturer</li><li><span class="check-icon">✓</span> Product Schema with price, availability, and rating markup</li><li><span class="check-icon">✓</span> Category pages: 150–300 word unique intro with target keyword</li><li><span class="check-icon">✓</span> Breadcrumb navigation with BreadcrumbList schema</li><li><span class="check-icon">✓</span> Faceted navigation: noindex filter URLs or use canonical tags</li></ul></div>
+<!-- JIJO JOSEPH VIDEOS -->
+<div class="module-videos">
+<div class="module-videos-title">🎬 Watch: Jijo Joseph's SEO Tutorials</div>
+<div class="module-videos-sub">Topic-wise video lessons by Jijo Joseph (Malayalam/English) — click to watch on YouTube</div>
+<div class="vid-grid">
+<a class="vid-item" href="https://www.youtube.com/watch?v=HxOQ5nyAXn8" rel="noopener" target="_blank">
+<div class="vid-thumb">
+<img alt="Optimize E-Commerce Product Title Tags for SEO" loading="lazy" src="https://img.youtube.com/vi/HxOQ5nyAXn8/hqdefault.jpg"/>
+<div class="vid-play"><svg fill="white" height="18" viewbox="0 0 24 24" width="18"><polygon points="5,3 19,12 5,21"></polygon></svg></div>
+</div>
+<div class="vid-info">
+<div class="vid-topic">Product Page Titles</div>
+<div class="vid-title-text">Optimize E-Commerce Product Title Tags for SEO</div>
+<div class="vid-channel-row">
+<span class="vid-channel-name">Jijo Joseph</span>
+<span class="vid-yt-badge">YouTube</span>
+</div>
+</div>
+</a>
+<a class="vid-item" href="https://www.youtube.com/watch?v=tPpiK4-iFm8" rel="noopener" target="_blank">
+<div class="vid-thumb">
+<img alt="Writing SEO Meta Descriptions for E-Commerce" loading="lazy" src="https://img.youtube.com/vi/tPpiK4-iFm8/hqdefault.jpg"/>
+<div class="vid-play"><svg fill="white" height="18" viewbox="0 0 24 24" width="18"><polygon points="5,3 19,12 5,21"></polygon></svg></div>
+</div>
+<div class="vid-info">
+<div class="vid-topic">Product Descriptions</div>
+<div class="vid-title-text">Writing SEO Meta Descriptions for E-Commerce</div>
+<div class="vid-channel-row">
+<span class="vid-channel-name">Jijo Joseph</span>
+<span class="vid-yt-badge">YouTube</span>
+</div>
+</div>
+</a>
+<a class="vid-item" href="https://www.youtube.com/watch?v=dJR1UkrX3HE" rel="noopener" target="_blank">
+<div class="vid-thumb">
+<img alt="Product &amp; Review Schema Markup — E-Commerce SEO" loading="lazy" src="https://img.youtube.com/vi/dJR1UkrX3HE/hqdefault.jpg"/>
+<div class="vid-play"><svg fill="white" height="18" viewbox="0 0 24 24" width="18"><polygon points="5,3 19,12 5,21"></polygon></svg></div>
+</div>
+<div class="vid-info">
+<div class="vid-topic">Product Schema</div>
+<div class="vid-title-text">Product &amp; Review Schema Markup — E-Commerce SEO</div>
+<div class="vid-channel-row">
+<span class="vid-channel-name">Jijo Joseph</span>
+<span class="vid-yt-badge">YouTube</span>
+</div>
+</div>
+</a>
+<a class="vid-item" href="https://www.youtube.com/watch?v=2t2wWReeb7s" rel="noopener" target="_blank">
+<div class="vid-thumb">
+<img alt="SEO-Friendly URL Structure for E-Commerce Sites" loading="lazy" src="https://img.youtube.com/vi/2t2wWReeb7s/hqdefault.jpg"/>
+<div class="vid-play"><svg fill="white" height="18" viewbox="0 0 24 24" width="18"><polygon points="5,3 19,12 5,21"></polygon></svg></div>
+</div>
+<div class="vid-info">
+<div class="vid-topic">E-Commerce URLs</div>
+<div class="vid-title-text">SEO-Friendly URL Structure for E-Commerce Sites</div>
+<div class="vid-channel-row">
+<span class="vid-channel-name">Jijo Joseph</span>
+<span class="vid-yt-badge">YouTube</span>
+</div>
+</div>
+</a>
+</div>
+</div>
+<div class="card" id="m11-quiz-card" style="border:1.5px solid #bfdbfe;background:#f8fbff;margin-top:8px"><h3>🧠 Module Quiz</h3><p style="font-size:0.87rem;color:var(--muted);margin-bottom:18px">Answer all 5 questions, then click <strong>"See My Score"</strong>. Score <strong>40%+</strong> to unlock the next module.</p><div id="m11-quiz"></div><div style="margin-top:16px;display:flex;align-items:center;gap:12px;flex-wrap:wrap"><button class="btn btn-primary" onclick="scoreQuiz('m11')">📊 See My Score</button><button class="btn btn-outline" onclick="retryQuiz('m11')">🔄 New Questions</button></div><div id="m11-score" style="display:none;margin-top:16px;padding:16px 20px;border-radius:12px;font-size:0.9rem;line-height:1.6"></div><div class="quiz-unlocked-banner" id="m11-unlock-banner">🔓 Module 12: AI &amp; Future SEO is now unlocked!</div></div>
+<div class="nav-buttons"><button class="btn btn-outline" onclick="showSection('m10')">← Previous</button><button class="btn btn-primary btn-next-locked" onclick="navClick('m12')">Next Module →</button></div>
+<p class="quiz-pass-hint">💡 Score 40%+ on the quiz above to unlock the next module</p>
+</div>
+<!-- MODULE 12 -->
+<div class="section" id="m12">
+<div class="module-header"><div class="module-icon">🤖</div><div><h2>Module 12: AI &amp; The Future of SEO</h2><p>Understand how AI is transforming search and adapt your strategy.</p></div></div>
+<div class="module-progress"><span style="color:var(--muted);font-weight:500;">Your progress</span><div class="module-progress-bar"><div class="module-progress-fill"></div></div><span class="module-progress-label">0 / 0 opened</span></div>
+<div class="expand-all-row"><button class="btn-xs" onclick="expandAll('m12')">↓ Expand All</button><button class="btn-xs" onclick="collapseAll('m12')">↑ Collapse All</button></div>
+<div class="card"><h3>🤖 AI Overviews &amp; The Future</h3><div class="grid-2"><div class="tool-card"><div class="tool-icon">✨</div><div class="tool-name">AI Overviews</div><div class="tool-desc">Google's AI generates summaries at the top of results, reducing clicks for informational queries. Target commercial &amp; transactional keywords to protect traffic.</div></div><div class="tool-card"><div class="tool-icon">🛡️</div><div class="tool-name">How to Survive</div><div class="tool-desc">Optimize for being cited IN AI Overviews. Build brand authority. Focus on bottom-of-funnel content where users must click to convert.</div></div></div></div>
+<div class="card"><h3>🔮 Future SEO Trends</h3><div class="grid-3"><div class="tool-card"><div class="tool-icon">🖼️</div><div class="tool-name">Visual Search</div><div class="tool-desc">Google Lens searches growing 50% YoY. Optimize images with descriptive filenames, alt text, and Image Schema.</div></div><div class="tool-card"><div class="tool-icon">🎬</div><div class="tool-name">Video SEO</div><div class="tool-desc">YouTube is the 2nd largest search engine. Video results appear in Google SERPs. Add transcripts, chapters, and video schema.</div></div><div class="tool-card"><div class="tool-icon">🧩</div><div class="tool-name">Entity SEO</div><div class="tool-desc">Google understands entities (people, brands, places). Build entity associations through structured data and authoritative mentions.</div></div></div></div>
+<!-- JIJO JOSEPH VIDEOS -->
+<div class="module-videos">
+<div class="module-videos-title">🎬 Watch: Jijo Joseph's SEO Tutorials</div>
+<div class="module-videos-sub">Topic-wise video lessons by Jijo Joseph (Malayalam/English) — click to watch on YouTube</div>
+<div class="vid-grid">
+<a class="vid-item" href="https://www.youtube.com/watch?v=hP1-ciBlFnc" rel="noopener" target="_blank">
+<div class="vid-thumb">
+<img alt="The Future of SEO — AI, Voice Search &amp; Trends 2024" loading="lazy" src="https://img.youtube.com/vi/hP1-ciBlFnc/hqdefault.jpg"/>
+<div class="vid-play"><svg fill="white" height="18" viewbox="0 0 24 24" width="18"><polygon points="5,3 19,12 5,21"></polygon></svg></div>
+</div>
+<div class="vid-info">
+<div class="vid-topic">Future of SEO</div>
+<div class="vid-title-text">The Future of SEO — AI, Voice Search &amp; Trends 2024</div>
+<div class="vid-channel-row">
+<span class="vid-channel-name">Jijo Joseph</span>
+<span class="vid-yt-badge">YouTube</span>
+</div>
+</div>
+</a>
+<a class="vid-item" href="https://www.youtube.com/watch?v=ZNAaoQ2-pXk" rel="noopener" target="_blank">
+<div class="vid-thumb">
+<img alt="Using AI Tools for Advanced SEO Keyword Research" loading="lazy" src="https://img.youtube.com/vi/ZNAaoQ2-pXk/hqdefault.jpg"/>
+<div class="vid-play"><svg fill="white" height="18" viewbox="0 0 24 24" width="18"><polygon points="5,3 19,12 5,21"></polygon></svg></div>
+</div>
+<div class="vid-info">
+<div class="vid-topic">AI Keyword Research</div>
+<div class="vid-title-text">Using AI Tools for Advanced SEO Keyword Research</div>
+<div class="vid-channel-row">
+<span class="vid-channel-name">Jijo Joseph</span>
+<span class="vid-yt-badge">YouTube</span>
+</div>
+</div>
+</a>
+<a class="vid-item" href="https://www.youtube.com/watch?v=SLNG24w5Ux8" rel="noopener" target="_blank">
+<div class="vid-thumb">
+<img alt="AI-Generated Content &amp; SEO — What Google Thinks" loading="lazy" src="https://img.youtube.com/vi/SLNG24w5Ux8/hqdefault.jpg"/>
+<div class="vid-play"><svg fill="white" height="18" viewbox="0 0 24 24" width="18"><polygon points="5,3 19,12 5,21"></polygon></svg></div>
+</div>
+<div class="vid-info">
+<div class="vid-topic">AI Content &amp; SEO</div>
+<div class="vid-title-text">AI-Generated Content &amp; SEO — What Google Thinks</div>
+<div class="vid-channel-row">
+<span class="vid-channel-name">Jijo Joseph</span>
+<span class="vid-yt-badge">YouTube</span>
+</div>
+</div>
+</a>
+<a class="vid-item" href="https://www.youtube.com/watch?v=qOMMUsf-DK4" rel="noopener" target="_blank">
+<div class="vid-thumb">
+<img alt="Google Search Console in the Age of AI Overviews" loading="lazy" src="https://img.youtube.com/vi/qOMMUsf-DK4/hqdefault.jpg"/>
+<div class="vid-play"><svg fill="white" height="18" viewbox="0 0 24 24" width="18"><polygon points="5,3 19,12 5,21"></polygon></svg></div>
+</div>
+<div class="vid-info">
+<div class="vid-topic">Analytics for AI SEO</div>
+<div class="vid-title-text">Google Search Console in the Age of AI Overviews</div>
+<div class="vid-channel-row">
+<span class="vid-channel-name">Jijo Joseph</span>
+<span class="vid-yt-badge">YouTube</span>
+</div>
+</div>
+</a>
+</div>
+</div>
+<div class="card" id="m12-quiz-card" style="border:1.5px solid #bfdbfe;background:#f8fbff;margin-top:8px"><h3>🧠 Module Quiz</h3><p style="font-size:0.87rem;color:var(--muted);margin-bottom:18px">Answer all 5 questions, then click <strong>"See My Score"</strong>. Score <strong>40%+</strong> to complete the course!</p><div id="m12-quiz"></div><div style="margin-top:16px;display:flex;align-items:center;gap:12px;flex-wrap:wrap"><button class="btn btn-primary" onclick="scoreQuiz('m12')">📊 See My Score</button><button class="btn btn-outline" onclick="retryQuiz('m12')">🔄 New Questions</button></div><div id="m12-score" style="display:none;margin-top:16px;padding:16px 20px;border-radius:12px;font-size:0.9rem;line-height:1.6"></div><div class="quiz-unlocked-banner" id="m12-unlock-banner">🎉 Course complete! Proceed to Assignments.</div></div>
+<div class="nav-buttons"><button class="btn btn-outline" onclick="showSection('m11')">← Previous</button><button class="btn btn-primary btn-next-locked" onclick="navClick('assignments')">View Assignments →</button></div>
+<p class="quiz-pass-hint">💡 Score 40%+ on the quiz above to unlock Assignments</p>
+</div>
+<!-- ASSIGNMENTS -->
+<div class="section" id="assignments">
+<div class="module-header"><div class="module-icon">📝</div><div><h2>Assignments &amp; Projects</h2><p>Apply what you've learned with these hands-on projects.</p></div></div>
+<div class="assignment-card"><h3>🔧 Project 1: Optimise a Basic HTML Website</h3><p>Create a 3-page HTML website for an imaginary business. Apply complete on-page SEO: title tags, meta descriptions, headings, alt text, internal links, canonical tags, and sitemap.xml.</p><div class="tag-list"><span class="a-tag">HTML</span><span class="a-tag">On-Page SEO</span><span class="a-tag">Schema</span><span class="a-tag">Modules 3+4</span></div></div>
+<div class="assignment-card"><h3>🔍 Project 2: Full SEO Audit</h3><p>Choose a real website. Use Screaming Frog, PageSpeed Insights, and Ahrefs/SEMrush trial to produce a complete audit report with recommendations.</p><div class="tag-list"><span class="a-tag">Screaming Frog</span><span class="a-tag">GSC</span><span class="a-tag">Module 9</span></div></div>
+<div class="assignment-card"><h3>✍️ Project 3: Write 3 SEO Blog Posts</h3><p>Plan and write 3 blog posts targeting specific keywords. Each must include keyword research evidence, proper heading structure, meta tags, internal links, images with alt text.</p><div class="tag-list"><span class="a-tag">Content Strategy</span><span class="a-tag">Keyword Research</span><span class="a-tag">Modules 2+8</span></div></div>
+<div class="assignment-card"><h3>📍 Project 4: Local SEO Strategy</h3><p>Create a complete local SEO strategy for a real or imaginary local business — GBP setup guide, NAP audit, review generation plan, local keywords, and LocalBusiness schema.</p><div class="tag-list"><span class="a-tag">Local SEO</span><span class="a-tag">Google Business</span><span class="a-tag">Module 7</span></div></div>
+<div class="success-box"><div class="box-title">🎓 Congratulations!</div>You've completed the Hirush Global SEO Training Program! Submit all 4 projects to your mentor for evaluation.</div>
+<div class="nav-buttons"><button class="btn btn-outline" onclick="showSection('m12')">← Previous</button><button class="btn btn-primary" onclick="showSection('home')">🏠 Back to Dashboard</button></div>
+</div>
+</div><!-- /content -->
 </div><!-- /main -->
-
 <!-- LOCK OVERLAY -->
 <div class="section-locked-overlay" id="lock-overlay">
-  <div class="lock-modal">
-    <div class="lock-icon">🔒</div>
-    <h3>Module Locked</h3>
-    <p>You need to complete <span class="lock-prev" id="lock-prev-name">the previous module</span> first.<br><br>Score <strong>40% or higher</strong> on the quiz to unlock the next module.</p>
-    <button class="btn btn-primary btn-go" onclick="goToPrevModule()">Go to Previous Module</button>
-    <br><br>
-    <button class="btn btn-outline" onclick="closeLockOverlay()" style="font-size:0.8rem;padding:8px 18px">✖ Close</button>
-  </div>
+<div class="lock-modal">
+<div class="lock-icon">🔒</div>
+<h3>Module Locked</h3>
+<p>You need to complete <span class="lock-prev" id="lock-prev-name">the previous module</span> first.<br/><br/>Score <strong>40% or higher</strong> on the quiz to unlock the next module.</p>
+<button class="btn btn-primary btn-go" onclick="goToPrevModule()">Go to Previous Module</button>
+<br/><br/>
+<button class="btn btn-outline" onclick="closeLockOverlay()" style="font-size:0.8rem;padding:8px 18px">✖ Close</button>
 </div>
-
+</div>
 <!-- ══════════════════════════════════════════════════════════════════ -->
 <!--  CORE JAVASCRIPT                                                  -->
 <!-- ══════════════════════════════════════════════════════════════════ -->
@@ -3274,7 +3044,6 @@ function initCards() {
 updateProgress();
 initCards();
 </script>
-
 <!-- ══════════════════════════════════════════════════════════════════ -->
 <!--  QUESTION BANK                                                    -->
 <!-- ══════════════════════════════════════════════════════════════════ -->
@@ -3402,7 +3171,6 @@ m12:[
 ]
 };
 </script>
-
 <!-- ══════════════════════════════════════════════════════════════════ -->
 <!--  QUIZ ENGINE  (FIXED — uses data-user-correct for scoring)        -->
 <!-- ══════════════════════════════════════════════════════════════════ -->
@@ -3564,6 +3332,5 @@ function retryQuiz(moduleId) {
 // Initialise all quizzes on load
 moduleOrder.forEach(mid => renderQuiz(mid));
 </script>
-
 </body>
 </html>
